@@ -1,4 +1,4 @@
-package dhbw.ai13.asr.audio;
+package dhbw.ai13.audio;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
