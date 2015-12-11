@@ -7,6 +7,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MFCCSupplier {
 
@@ -20,9 +22,11 @@ public class MFCCSupplier {
         File f = new File(path);
         double[] mfccValue = mfcc.computeMFCC(f,26);
         String fileName = f.getName(), vocal = "UNKNOWN", person = "UNKNOWN";
-        if (fileName.matches("(A|E|I|O|U)_.*_.*_.*wav")) {
-            vocal = fileName.substring(0, 1);
-            person = fileName.substring(2, fileName.length());
+        Pattern p = Pattern.compile("(A|E|I|O|U)_(.+)_(.+)_.*wav");
+        Matcher m = p.matcher(fileName);
+        if (m.matches()) {
+            vocal = m.group(1);
+            person = m.group(2) + " " + m.group(3);
         }
         return new Vector13D(mfccValue, vocal, person);
     }
@@ -48,11 +52,9 @@ public class MFCCSupplier {
         return null;
     }
 
-    /*
     public static void main(String[] args){
-        ArrayList<Vector13D> o = MFCCSupplier.computeMFCCsOfFolder("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources");
+        ArrayList<Vector13D> o = MFCCSupplier.computeMFCCsOfFolder("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
         System.out.println(o);
     }
-    */
 
 }
