@@ -13,9 +13,17 @@ public class FileChooser {
 		chooser.setFileFilter(new FileNameExtensionFilter("wave", "wav"));
 		
 		int rueckgabeWert = chooser.showOpenDialog(null);
-		if(rueckgabeWert == JFileChooser.APPROVE_OPTION)
+		try
 		{
-			setFilename(chooser.getSelectedFile().getAbsolutePath().toLowerCase());
+			if(rueckgabeWert == JFileChooser.APPROVE_OPTION)
+			{
+				setFilename(chooser.getSelectedFile().getAbsolutePath().toLowerCase());
+				System.out.println(getFilename());
+			}
+		}				
+			catch (Exception e)			
+		{
+				e.printStackTrace();
 		}
 	}
 

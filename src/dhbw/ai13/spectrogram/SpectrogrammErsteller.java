@@ -12,13 +12,21 @@ public class SpectrogrammErsteller {
 	
 	public SpectrogrammErsteller(int fftSampleSize, int overlapFactor, String file)
 	{
-		setOverlapFactor(fftSampleSize);
-		setFftSampleSize(fftSampleSize);
-		
-		Wave wave = new Wave(file);
-		Spectrogram spectrogram = new Spectrogram(wave);
-		
-		setSpectrogramData(spectrogram.getAbsoluteSpectrogramData());
+		if(!file.contains("."))
+		{
+			System.out.println("Kein File angegeben");
+		}
+		else
+		{
+			setOverlapFactor(fftSampleSize);
+			setFftSampleSize(fftSampleSize);
+			
+			Wave wave = new Wave(file);
+			Spectrogram spectrogram = new Spectrogram(wave);
+			
+			setSpectrogramData(spectrogram.getAbsoluteSpectrogramData());
+		}
+
 	}
 		
 
