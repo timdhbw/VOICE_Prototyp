@@ -3,8 +3,7 @@ package dhbw.ai13.ann;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import dhbw.ai12.ann.SpeakerNet;
-import dhbw.ai12.ann.VowelNet;
+import dhbw.ai13.ann.SpeakerNet;
 import dhbw.ai13.speech.detection.Vector13D;
 
 public class PrototypeTest {
