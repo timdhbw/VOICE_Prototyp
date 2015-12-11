@@ -1,11 +1,11 @@
-package tim.naiveBayes.trainer;
+package dhbw.ai13.bayesClassificator.trainer;
 
 
 
 import java.util.ArrayList;
 
 
-import tim.naiveBayes.Database;
+import dhbw.ai13.bayesClassificator.naiveBayes.*;;
 
 /*
  * Der Trainer ist das Zentrale Objekt, hier sind alle bisher zum Training genutzten Objekte, sowie die Database

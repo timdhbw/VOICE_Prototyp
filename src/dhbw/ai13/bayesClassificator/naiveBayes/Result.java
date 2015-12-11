@@ -1,4 +1,4 @@
-package tim.naiveBayes;
+package dhbw.ai13.bayesClassificator.naiveBayes;
 
 public class Result {
 	private String name;

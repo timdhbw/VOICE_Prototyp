@@ -16,4 +16,17 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>org.encog</groupId>
+  		<artifactId>encog-core</artifactId>
+  		<version>3.0.1</version>
+  	</dependency>
+  	<dependency>
+		<groupId>org.apache.commons</groupId>
+		<artifactId>commons-math3</artifactId>
+		<version>3.0</version>
+	</dependency>
+  	
+  </dependencies>
 </project>

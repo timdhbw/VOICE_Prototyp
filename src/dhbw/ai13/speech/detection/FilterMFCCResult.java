@@ -1,4 +1,4 @@
-package dhbw.ai12.speech.detection;
+package dhbw.ai13.speech.detection;
 
 /**
  * Filter the result of the mfcc calculation. Detects and drops silence as well

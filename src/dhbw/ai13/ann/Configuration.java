@@ -1,4 +1,4 @@
-package dhbw.ai12.ann;
+package dhbw.ai13.ann;
 
 /**
 * The class Configuration has configuration information. It has a static constant. The constant specifies, if debug information is writen to the

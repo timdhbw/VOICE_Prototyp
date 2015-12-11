@@ -1,4 +1,4 @@
-package tim.naiveBayes;
+package dhbw.ai13.bayesClassificator.naiveBayes;
 
 import java.util.ArrayList;
 

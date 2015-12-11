@@ -1,4 +1,4 @@
-package dhbw.ai12.speech.detection;
+package dhbw.ai13.speech.detection;
 
 import java.io.IOException;
 import java.util.ArrayList;

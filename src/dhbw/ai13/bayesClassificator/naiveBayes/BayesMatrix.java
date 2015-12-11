@@ -1,4 +1,4 @@
-package tim.naiveBayes;
+package dhbw.ai13.bayesClassificator.naiveBayes;
 
 /*
  *In der BayesMatrix wird eine Matrix gespeichert.

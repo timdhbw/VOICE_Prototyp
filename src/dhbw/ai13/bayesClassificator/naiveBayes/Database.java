@@ -1,4 +1,4 @@
-package tim.naiveBayes;
+package dhbw.ai13.bayesClassificator.naiveBayes;
 /*
  *In dieser Klasse ist die Gesamtheit der Warsheinlichkeiten in einem zweidimensionalen BayesMatrix Array gespeichert.
  *Jedes Feld der Matrix besteht aus einer BayesMatrix, die die Wahrscheinlichkeiten fuer eine Bestimmte Zahl, die an

@@ -1,7 +1,7 @@
-package dhbw.ai12.ann;
+package dhbw.ai13.ann;
 
-import static dhbw.ai12.ann.ArrayUtil.getMaxIndex;
-import static dhbw.ai12.ann.Configuration.DEBUG;
+import static dhbw.ai13.ann.ArrayUtil.getMaxIndex;
+import static dhbw.ai13.ann.Configuration.DEBUG;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
-import dhbw.ai12.speech.detection.Vector13D;
+import dhbw.ai13.speech.detection.Vector13D;
 /**
 * The class VowelNet determines the char to mfcc data.
 * @author KI-Team

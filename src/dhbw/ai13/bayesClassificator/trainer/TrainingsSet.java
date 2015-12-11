@@ -1,11 +1,11 @@
-package tim.naiveBayes.trainer;
+package dhbw.ai13.bayesClassificator.trainer;
 
 import java.util.ArrayList;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 
-import tim.naiveBayes.Database;
+import dhbw.ai13.bayesClassificator.naiveBayes.*;
 
 /*
  * TrainingsSet for one phonem
