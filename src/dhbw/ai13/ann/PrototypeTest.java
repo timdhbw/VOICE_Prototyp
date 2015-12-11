@@ -28,7 +28,7 @@ public class PrototypeTest {
 	}
 	public void init() throws NumberFormatException, IOException {
 		if (mfccs.size() == 0){
-			ArrayList<Vector13D> m = MFCCSupplier.computeMFCCsOfFolder("C:/Users/Nico/workspace/VOICE_Prototyp/resources");
+			ArrayList<Vector13D> m = MFCCSupplier.computeMFCCsOfFolder(System.getProperty("user.dir")+"/resources");
 			if (!m.equals(mfccs)) {
 			mfccs = m;
 			speakerNet = new SpeakerNet(mfccs);		
@@ -39,9 +39,10 @@ public class PrototypeTest {
 	public static void main(String[] args) {
 		PrototypeTest net = new PrototypeTest();
 		try {
+			System.out.println(System.getProperty("user.dir"));
 			net.init();
 			System.out.println("INIT DONE");
-			Vector13D v = MFCCSupplier.computeMFCCOfFile("C:/Users/Nico/workspace/VOICE_Prototyp/resources/Testfile.wav");
+			Vector13D v = MFCCSupplier.computeMFCCOfFile(System.getProperty("user.dir")+"/resources/Testfile.wav");
 			System.out.println("FILE READ");
 			System.out.println(net.getSpeakerNet().identify(v.getVector()));
 			System.out.println("SUCCESS");
