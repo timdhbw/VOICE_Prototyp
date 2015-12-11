@@ -3,6 +3,8 @@ package dhbw.ai13.ann;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dhbw.ai12.ann.SpeakerNet;
+import dhbw.ai12.ann.VowelNet;
 import dhbw.ai13.speech.detection.Vector13D;
 
 public class PrototypeTest {
@@ -14,7 +16,12 @@ public class PrototypeTest {
 		mfccs = new ArrayList<>();
 	}
 	public void init() throws NumberFormatException, IOException {
-		
+		if (mfccs.size() == 0){
+//			ArrayList<Vector13D> m = [Daten zum Trainieren]
+//			if (!m.equals(mfccs)) {
+//			mfccs = m;
+//			speakerNet = new SpeakerNet(mfccs);		
+		}
 	}
 	
 	public static void main(String[] args) {
