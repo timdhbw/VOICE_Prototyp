@@ -15,10 +15,10 @@ public class MFCCSupplier {
      * @param path Path of the file.
      */
     public static Vector13D computeMFCCOfFile(String path) throws IOException, UnsupportedAudioFileException {
-        //System.out.println(path);
+        System.out.println(path);
         MFCC mfcc = new MFCC();
         File f = new File(path);
-        double[] mfccValue = mfcc.computeMFCC(f,13);
+        double[] mfccValue = mfcc.computeMFCC(f,26);
         String fileName = f.getName(), vocal = "UNKNOWN", person = "UNKNOWN";
         if (fileName.matches("(A|E|I|O|U)_.*_.*_.*wav")) {
             vocal = fileName.substring(0, 1);
