@@ -44,7 +44,7 @@ public class SpeakerNet {
 		HashMap<String, Integer> h = new HashMap<>();
 		for (Vector13D v : mfccs) {
 			String user = v.getUser();
-			String person = user.substring(0, user.lastIndexOf('_'));
+			String person = user;
 			if (!h.containsKey(person)) {
 				indexToSpeakerMap.put(h.size(), person);
 				h.put(person, h.size());
@@ -57,7 +57,7 @@ public class SpeakerNet {
 		for (Vector13D v : mfccs) {
 			System.arraycopy(v.getVector(), 0, input[c], 0, COEFFICIENTS_TO_USE);
 			String user = v.getUser();
-			String person = user.substring(0, user.lastIndexOf('_'));
+			String person = user;
 			output[c][h.get(person)] = 1;
 			c++;
 		}
