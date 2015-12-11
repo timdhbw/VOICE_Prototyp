@@ -31,5 +31,4 @@ public class PrototypeTest {
 			// TODO: handle exception
 		} 
 	}
-
 }

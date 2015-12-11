@@ -86,7 +86,7 @@ public class AudioStreamReader {
         int frameCount = getFrameCount();
         //int sampleCount = frameCount * numChannels;
         int numSamples = frameCount;
-        System.out.println("Samples pro Channel: " + numSamples);
+        //System.out.println("Samples pro Channel: " + numSamples);
         double[][] samples = new double[n][numSamples];
 
         byte[] frame = new byte[audioFormat.getFrameSize()];

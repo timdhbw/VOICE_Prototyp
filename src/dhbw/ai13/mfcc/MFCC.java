@@ -176,9 +176,9 @@ public class MFCC {
     private double[][] applyDft(final double[][] framedSignal, final int frameSampleCount, final int dftLength){
         // apply the discrete fourier transform algorithm to each frame
         final double[][] framedSpectrum = new double[framedSignal.length][dftLength];
-        System.out.printf("[NumWindows] %d\n",framedSignal.length);
-        System.out.printf("[Window-Length] %d\n",framedSignal[0].length);
-        System.out.printf("[DFT-Length] %d\n",dftLength);
+        //System.out.printf("[NumWindows] %d\n",framedSignal.length);
+        //System.out.printf("[Window-Length] %d\n",framedSignal[0].length);
+        //System.out.printf("[DFT-Length] %d\n",dftLength);
         Thread[] worker = new Thread[framedSpectrum.length];
         for (int i = 0; i < worker.length; i++) {
             int index = i;
