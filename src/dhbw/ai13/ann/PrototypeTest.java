@@ -41,7 +41,7 @@ public class PrototypeTest {
 		try {
 			net.init();
 			System.out.println("INIT DONE");
-			Vector13D v = MFCCSupplier.computeMFCCOfFile("C:/Users/Nico/workspace/VOICE_Prototyp/resources/A_Nico_Becker_01.wav");
+			Vector13D v = MFCCSupplier.computeMFCCOfFile("C:/Users/Nico/workspace/VOICE_Prototyp/resources/Testfile.wav");
 			System.out.println("FILE READ");
 			System.out.println(net.getSpeakerNet().identify(v.getVector()));
 			System.out.println("SUCCESS");
