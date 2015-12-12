@@ -3,7 +3,7 @@ package dhbw.ai13.bayesClassificator.naiveBayes;
 import java.util.ArrayList;
 
 /*
- * Erkl�rung
+ * Erklaerung
  * import string[Real Time][Row of Spectometre] = Frequence
  * Database database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
  * times = how many time steps is the length of a possible phonem
@@ -12,14 +12,14 @@ import java.util.ArrayList;
 
 public class Algorithm {
 	private Database database;
-	private int[][] stream;
+	private double[][] stream;
 	private int times;
 	private double minimumPossibility;
 	private static final int TIME_COUNT = 2;
 	
 	
 	//Constructors
-	public Algorithm(Database database, int[][] stream){
+	public Algorithm(Database database, double[][] stream){
 		this.database = database;
 		this.stream = stream;
 		this.times = 10; //default
@@ -27,7 +27,7 @@ public class Algorithm {
 		System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
-	public Algorithm(Database database, int[][] stream, int times, double minimumPossibility){
+	public Algorithm(Database database, double[][] stream, int times, double minimumPossibility){
 		this.database = database;
 		this.stream = stream;
 		this.times = times;
@@ -68,12 +68,12 @@ public class Algorithm {
 	 */
 	private ArrayList<Result> findStartResult(int timeIndex) {
 		ArrayList<Result> res = new ArrayList<Result>();
-		int[]startStream = stream[timeIndex];
-		double[] buffer =  database.getData(startStream[0], 0).getBeginningArray();
+		double[]startStream = stream[timeIndex];
+		double[] buffer =  database.getData((int)startStream[0], 0).getBeginningArray();
 		
 		//calculate probabilitys
 		for (int i = 1; i < startStream.length; i++) {
-			buffer = this.convert(buffer, database.getData(startStream[i], i).getBeginningArray());
+			buffer = this.convert(buffer, database.getData((int)startStream[i], i).getBeginningArray());
 		}
 		//create results for good probabilitys
 		for (int i = 0; i < buffer.length; i++) {
@@ -115,7 +115,7 @@ public class Algorithm {
 			//time
 			for(int t=timeIndex;t<(times+timeIndex);t++){
 				for(int i=0;i<stream[0].length;i++){
-					intensity = stream[t][i];
+					intensity = (int)stream[t][i];
 					countHelper = countHelper + (database.getData(i,intensity).getPossibility(timeInBayesMatrix, startResult.getIndex()));
 					countIndex++;
 					if(countIndex == TIME_COUNT){

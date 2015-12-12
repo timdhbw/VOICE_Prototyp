@@ -24,15 +24,8 @@ public class MainTest {
 //		System.out.println(data.getData(4,4).toString());
 //		System.out.println(data.getData(2, 2).getPossibility(2, 2));
 		
-		Algorithm al = new Algorithm(data, a, 5, 0.006);
-		ArrayList<Result> aray = al.getBestResults();
-		if(aray.isEmpty()){
-			System.out.println("empty");
-		}else{
-			for(int i=0;i<aray.size();i++){
-				System.out.println(aray.get(i).toString());
-			}
-		}
+		//Algorithm al = new Algorithm(data, a, 5, 0.006);
+		
 	}
 
 	
