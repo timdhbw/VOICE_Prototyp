@@ -24,7 +24,7 @@ public class Database {
 	//create random Database
 	public Database(int columnIntensity, int rowFrequence, int bmColumnTimeStep, int bmRowPhonem){
 		this.data = new BayesMatrix[columnIntensity][rowFrequence];
-		this.column = columnIntensity;
+		this.column = columnIntensity/100;
 		this.row = rowFrequence;
 		for(int i=0;i<columnIntensity;i++){
 			for(int j=0;j<rowFrequence;j++){
@@ -37,16 +37,24 @@ public class Database {
 	//method
 	//get BayesMatrix out of Database
 	public BayesMatrix getData(int column, int row){
-		if(this.column >= column && this.row >= row){
+		if(this.column >= column/100 && this.row >= row){
 			return data[column][row];
 		}else{
-			System.out.println("Out of bounce(Row or Column!) return is null!!");
+			System.out.println("Out of bounce(Row or Column!) return is null!!\n"
+					+ "Column is " + column/100 + " (expected <" + this.column + ", Row is " + row + " (expected <" +this.row);
 			return null;
 		}
+	}
+	public void setNameOfRow(String[] nameOfRow){
+		this.nameOfRow = nameOfRow;
 	}
 	
 	public String[] getNameOfRow(){
 		return nameOfRow;
+	}
+	
+	public int getNumberOfFrequece(){
+		return row;
 	}
 	
 	public int getNumberOfIntensity(){

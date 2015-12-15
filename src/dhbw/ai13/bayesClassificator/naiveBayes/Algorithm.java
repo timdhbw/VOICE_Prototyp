@@ -2,11 +2,12 @@ package dhbw.ai13.bayesClassificator.naiveBayes;
 
 import java.util.ArrayList;
 
-/*
+/**
  * Erklaerung
  * import string[Real Time][Row of Spectometre] = Frequence
  * Database database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
  * times = how many time steps is the length of a possible phonem
+ * @author Tim Tiede
  */
 
 

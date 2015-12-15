@@ -4,14 +4,16 @@ import java.util.ArrayList;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.distribution.AbstractRealDistribution;
 
 import dhbw.ai13.bayesClassificator.naiveBayes.*;
 
-/*
- * TrainingsSet for one phonem
- * Das Trainingsmodell ist ein zweidimensionaler double Array mit double[Zeitschritt][reihe]=frequenz
- * Die Trainingsmodelle werden in einer ArrayList gespeichert.
+/**
+ * TrainingsSet for one phonem Das Trainingsmodell ist ein zweidimensionaler
+ * double Array mit double[Zeitschritt][reihe]=frequenz Die Trainingsmodelle
+ * werden in einer ArrayList gespeichert.
  * 
+ * @author Tim Tiede
  */
 
 public class TrainingsSet {
@@ -19,82 +21,104 @@ public class TrainingsSet {
 	private int index;
 	private String name;
 	private Database database;
-	
-	//constructor
-	public TrainingsSet(int index, String name, Database database){
+
+	// constructor
+	public TrainingsSet(int index, String name, Database database) {
 		this.trainingValues = new ArrayList<double[][]>();
 		this.index = index;
 		this.name = name;
 		this.database = database;
 	}
-	
-	
-	//trainingsmodellwird zugef√ºgt
-	public void addTrainingValue(double[][] train){
+
+	// trainingsmodellwird zugefuegt
+	public void addTrainingValue(double[][] train) {
 		trainingValues.add(train);
-		
-		for(int timeSteps=0;timeSteps<train.length;timeSteps++){
-			for(int frequence=0;frequence<train[0].length;frequence++){
-				
+
+		for (int timeSteps = 0; timeSteps < train.length; timeSteps++) {
+			/*
+			 * Hier wird wird f¸r jeden 8. Frequenzschritt die
+			 * Wahrscheinlichkeit von eingetragen
+			 */
+			for (int frequence = 0; frequence < trainingValues.get(0)[0].length; frequence++) {
+
 				double[] values = new double[trainingValues.size()];
 				double counter = 0;
-				
-				for(int trainVal=0;trainVal<trainingValues.size();trainVal++){
+
+				for (int trainVal = 0; trainVal < trainingValues.size(); trainVal++) {
 					values[trainVal] = trainingValues.get(trainVal)[timeSteps][frequence];
 					counter = counter + values[trainVal];
 				}
-				
+				// System.out.println("normalverteilung erstellen");
 				NormalDistribution normDistr = auxiliary(values, counter);
-				//for every intensity one value of the BayesMatrix is chanced+
-				for(int intensity=0;intensity<database.getNumberOfIntensity();intensity++){
-					database.getData(intensity, frequence).setData(normDistr.density((double)intensity), timeSteps, frequence);
-				}	
+				// System.out.println("normalverteilung erstellt");
+				// for every intensity one value of the BayesMatrix is chanced+
+				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
+					database.getData(intensity, frequence)
+							.setData(
+									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
+											- normDistr.cumulativeProbability((double) (intensity * 100))),
+									timeSteps, index);
+				}
 			}
 		}
+
 	}
-	
-	//train database again for phonem of this TrainingsSet
-	public void refresh(){
-		
-		for(int timeSteps=0;timeSteps<trainingValues.get(0).length;timeSteps++){
-			for(int row=0;row<trainingValues.get(0)[0].length;row++){
-				
+
+
+
+	// train database again for phonem of this TrainingsSet
+	public void refresh() {
+		if (trainingValues.isEmpty()) {
+			return;
+		}
+		for (int timeSteps = 0; timeSteps < trainingValues.get(0).length; timeSteps++) {
+
+			System.out.println("l‰uft");
+			for (int frequence = 0; frequence < trainingValues.get(0)[0].length; frequence++) {
+
 				double[] values = new double[trainingValues.size()];
 				double counter = 0;
-				
-				for(int trainVal=0;trainVal<trainingValues.size();trainVal++){
-					values[trainVal] = trainingValues.get(trainVal)[timeSteps][row];
+
+				for (int trainVal = 0; trainVal < trainingValues.size(); trainVal++) {
+					values[trainVal] = trainingValues.get(trainVal)[timeSteps][frequence];
 					counter = counter + values[trainVal];
 				}
-				
+				// System.out.println("normalverteilung erstellen");
 				NormalDistribution normDistr = auxiliary(values, counter);
-				//for every frequence one value of the BayesMatrix is chanced+
-				for(int intensity=0;intensity<database.getNumberOfIntensity();intensity++){
-					database.getData(intensity, row).setData(normDistr.density((double)intensity), timeSteps, row);
-				}	
+				// System.out.println("normalverteilung erstellt");
+				// for every intensity one value of the BayesMatrix is chanced+
+				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
+					database.getData(intensity, frequence/8)
+							.setData(
+									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
+											- normDistr.cumulativeProbability((double) (intensity * 100))),
+									timeSteps, index);
+				}
 			}
 		}
 	}
-	
-	
-	//get Normal Distribution
-	private NormalDistribution auxiliary(double[] values, double counter){
-		double mean = counter/((double)trainingValues.size());
+
+	// get Normal Distribution
+	private NormalDistribution auxiliary(double[] values, double counter) {
+		double mean = counter / ((double) trainingValues.size());
+		// System.out.println("Mean geht" + mean);
 		double standardDeviation;
 		StandardDeviation sd = new StandardDeviation();
 		standardDeviation = sd.evaluate(values);
-		
+		// System.out.println("standart deviation geht" + standardDeviation);
+		if (standardDeviation == 0)
+			standardDeviation = 100;
 		return new NormalDistribution(mean, standardDeviation);
-		
+
 	}
-	
-	//getter
-	public int getIndex(){
+
+	// getter
+	public int getIndex() {
 		return index;
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return name;
 	}
-	
+
 }

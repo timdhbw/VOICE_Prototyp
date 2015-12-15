@@ -1,5 +1,10 @@
 package dhbw.ai13.bayesClassificator.naiveBayes;
 
+/**
+ * Um die möglichen Resultate zu speichern
+ * @author Tim Tiede
+ */
+
 public class Result {
 	private String name;
 	private int index;

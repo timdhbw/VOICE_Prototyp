@@ -7,9 +7,10 @@ import java.util.ArrayList;
 
 import dhbw.ai13.bayesClassificator.naiveBayes.*;;
 
-/*
+/**
  * Der Trainer ist das Zentrale Objekt, hier sind alle bisher zum Training genutzten Objekte, sowie die Database
  * gespeichert.
+ * @author Tim Tiede
  */
 
 public class NaiveBayesTrainer {
@@ -23,11 +24,11 @@ public class NaiveBayesTrainer {
 	
 	//constructor
 	public NaiveBayesTrainer(int numberOfIntensity, int numberOfFrequences, int timeSteps, int numberOfPhonems){
-		this.numberOfIntensity = numberOfIntensity;
-		this.numberOfFrequences = numberOfFrequences;
+		this.numberOfIntensity = numberOfIntensity; //notice it will devided /10
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
 		database = new Database(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
+		this.numberOfFrequences = numberOfFrequences/8;
 		trainingsSets = new ArrayList<TrainingsSet>();
 	}
 	
@@ -43,6 +44,7 @@ public class NaiveBayesTrainer {
 	private boolean check(double[][] stream){
 		if(stream.length == timeSteps){
 			if(stream[0].length == numberOfFrequences){
+				System.out.println("stream gecheckt");
 				return true;
 			}else{
 				System.out.println("Trainingsstream hat die falsche Anzahl von Reihen!!");
@@ -54,7 +56,7 @@ public class NaiveBayesTrainer {
 		}
 	}
 	
-	//Adds to the rigt TrainingsSet
+	//Adds to the right TrainingsSet
 	private void addToTrainingsSet(double[][] stream, String name){
 		int index = Integer.MAX_VALUE;
 		for(int i=0;i<trainingsSets.size();i++){
@@ -62,12 +64,19 @@ public class NaiveBayesTrainer {
 		}
 		if(index<trainingsSets.size()){
 			trainingsSets.get(index).addTrainingValue(stream);
+			System.out.println("added to index: " + 0);
 		}else{
+			System.out.println("else fall");
 			index = trainingsSets.size();
-			trainingsSets.add(new TrainingsSet(index, name, database));
-			trainingsSets.get(index).addTrainingValue(stream);
-			//refresh the new Database
+			System.out.println("index: " +index);
 			refreshDatabase(numberOfIntensity, numberOfFrequences, timeSteps, (numberOfPhonems+1));
+			System.out.println("database refreshed");
+			trainingsSets.add(new TrainingsSet(index, name, database));
+			System.out.println("Ins Trainingsset eingefügt");
+			trainingsSets.get(index).addTrainingValue(stream);
+			System.out.println("added to index: " + index);
+			//refresh the new Database
+			
 		}
 	}
 	
@@ -77,7 +86,12 @@ public class NaiveBayesTrainer {
 		this.numberOfFrequences = numberOfFrequences;
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
+		System.out.println("datenbanck erneuern");
+		database = null;
+		System.out.println("datenbank null");
+		System.out.println(numberOfIntensity + ", " + numberOfFrequences + ", " + timeSteps + ", " + numberOfPhonems);
 		database = new Database(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
+		System.out.println("datenbank erneuert!");
 		for(int i=0;i<trainingsSets.size();i++){
 			trainingsSets.get(i).refresh();
 		}

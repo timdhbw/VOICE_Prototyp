@@ -1,8 +1,9 @@
 package dhbw.ai13.bayesClassificator.naiveBayes;
 
-/*
+/**
  *In der BayesMatrix wird eine Matrix gespeichert.
  *Die Matrix beschreibt in den Zeilen jeweils ein Phonem, jede Spalte steht fuer eine Zeit 
+ *@author Tim Tiede
  */
 public class BayesMatrix {
 
@@ -18,9 +19,16 @@ public class BayesMatrix {
 		this.column = matrix.length;
 		this.nameOfRow = new String[row];
 	}
+	//create empty Bayes Matric
+	public BayesMatrix(int column, int row) {
+		this.matrix = new double[column][row];
+		this.row = row;
+		this.column = column;
+		this.nameOfRow = new String[row];
+		}
 
 	//create random matrix
-	public BayesMatrix(int column, int row) {
+	public BayesMatrix(int column, int row, boolean random) {
 		this.matrix = new double[column][row];
 		this.row = row;
 		this.column = column;
