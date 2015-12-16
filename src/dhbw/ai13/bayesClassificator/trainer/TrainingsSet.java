@@ -35,10 +35,6 @@ public class TrainingsSet {
 		trainingValues.add(train);
 
 		for (int timeSteps = 0; timeSteps < train.length; timeSteps++) {
-			/*
-			 * Hier wird wird für jeden 8. Frequenzschritt die
-			 * Wahrscheinlichkeit von eingetragen
-			 */
 			for (int frequence = 0; frequence < trainingValues.get(0)[0].length; frequence++) {
 
 				double[] values = new double[trainingValues.size()];
