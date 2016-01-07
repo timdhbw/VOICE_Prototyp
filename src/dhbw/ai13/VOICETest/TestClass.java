@@ -10,24 +10,31 @@ import dhbw.ai13.spectrogram.SpectrogrammErsteller;
 public class TestClass {
 
 	public static void main(String[] args) {
+		System.out.println("Starte VOICE");
 		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_01.wav");
+		System.out.println("Eric Zenker 1 eingelesen");
 		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 
 		String[] st = {"a"};
 		nbt.getDatabase().setNameOfRow(st);
 		double[][] d = change1(creater);
+		System.out.println("Eric Zenker 1 eingefügt");
 		
 		nbt.trainDatabase(d, "a");
 		 creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_02.wav");
 		d = change1(creater);
+		System.out.println("Eric Zenker 2 eingelesen");
 		
 		nbt.trainDatabase(d, "a");
+		System.out.println("Eric Zenker 2 eingefügt");
+		
 		System.out.println("Training beendet");
-//		
+		
 		d = changer2(d);
 		
 		Algorithm alg = new Algorithm(nbt.getDatabase(), d);
 		ArrayList<Result> res = alg.getBestResults();
-		System.out.println("Results berechnet");
+		System.out.println("Datei 1 verglichen");
+
 		for(int i=0;i<res.size();i++){
 			System.out.println(res.get(i).toString());
 		}
