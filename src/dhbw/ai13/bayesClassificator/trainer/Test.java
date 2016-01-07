@@ -43,7 +43,7 @@ public class Test {
 			}
 		}
 		nbt.trainDatabase(d, "a");
-//		System.out.println("Training 2 beendet");
+		System.out.println("Training 2 beendet");
 //		System.out.println("Database");
 //		System.out.print("Intensitaetsspalten: " + nbt.getDatabase().getNumberOfIntensity());
 //		System.out.print(", Frequenzreihen: " + nbt.getDatabase().getNumberOfFrequece());

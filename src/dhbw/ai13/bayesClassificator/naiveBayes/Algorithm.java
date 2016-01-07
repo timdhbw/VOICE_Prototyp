@@ -120,9 +120,7 @@ public class Algorithm {
 			for(int t=timeIndex+1;t<(times+timeIndex);t++){
 				
 				for(int i=0;i<stream[t].length;i++){
-					System.out.println("time in bayes matrix:" + timeInBayesMatrix);
 					intensity = (int)stream[t][i];
-					System.out.println(intensity);
 					if(intensity>100)intensity = 100;
 					pos = pos*(database.getData(intensity,i).getPossibility(timeInBayesMatrix, timeIndex));
 				}
