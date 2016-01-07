@@ -2,6 +2,12 @@ package dhbw.ai13.spectrogram;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+/**
+ * Ein einfacher Filechooser mit einem Filefilter, um eine .wav-Datei auszuwählen.
+ * 
+ * @author Rohmund, Tino
+ *
+ */
 public class FileChooser {
 
 	String filename = "";

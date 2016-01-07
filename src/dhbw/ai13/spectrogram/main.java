@@ -17,6 +17,12 @@ public class main {
 		
 	}
 	
+	/**
+	 * Gibt die Werte eines zweidimensionalen Arrays in der Form [i][j] = Wert aus.
+	 * Hier nur nötig um die Spektrogrammwerte sichtbar auf der Konsole anzeigen zu lassen.
+	 * 
+	 * @param data ein zweidimensionales Array mit einem primitiven Datentyp
+	 */
 	private static void datenAusgeben (double[][] data){
 		
 		for(int i = 0; i < data.length; i++)
