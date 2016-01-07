@@ -24,7 +24,7 @@ public class Algorithm {
 		this.stream = stream;
 		this.times = 10; //default
 		this.minimumPossibility = 0.0000000000000000000000000005;//default
-		System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
+		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
 	public Algorithm(Database database, double[][] stream, int times, double minimumPossibility){
@@ -41,7 +41,7 @@ public class Algorithm {
 	
 	public ArrayList<Result> getBestResults(){
 		ArrayList<Result> bestResult = new ArrayList<Result>();
-		System.out.println("in get best result");
+		//System.out.println("in get best result");
 		//startobjekte suchen, (-times, damit givenProbability nicht outOfBounce geht
 		//for timeSteps
 		for(int i=0;i<=(stream.length-times);i++){
@@ -68,7 +68,7 @@ public class Algorithm {
 	 * werden Results erstellt;
 	 */
 	private ArrayList<Result> findStartResult(int timeIndex) {
-		System.out.println("in find Start result");
+		//System.out.println("in find Start result");
 		ArrayList<Result> res = new ArrayList<Result>();
 		double[]startStream = stream[timeIndex];
 		double[] buffer =  database.getData((int)startStream[0], 0).getBeginningArray();
@@ -77,7 +77,7 @@ public class Algorithm {
 		for (int i = 1; i < startStream.length; i++) {
 			buffer = this.convert(buffer, database.getData((int)startStream[i], i).getBeginningArray());
 		}
-		System.out.println(buffer[0]);
+		//System.out.println(buffer[0]);
 		//create results for good probabilitys
 		for (int i = 0; i < buffer.length; i++) {
 			if (buffer[i] >= minimumPossibility) {
@@ -110,7 +110,7 @@ public class Algorithm {
 		 */
 		private Result givenProbability(Result startResult){
 			//stream[t = time][i = frequence] j = intensity
-			System.out.println("in given probability");
+			//System.out.println("in given probability");
 			int timeIndex = startResult.getTimeIndex();
 			int intensity;
 			double pos = 1;
@@ -126,7 +126,7 @@ public class Algorithm {
 				}
 				//stop if OutOfBounce
 				if(t==(stream.length-1)){
-					System.out.println("OutOfBounce: Stream is to short for given Probability");
+					//System.out.println("OutOfBounce: Stream is to short for given Probability");
 					t = times+timeIndex;
 				}
 					timeInBayesMatrix++;

@@ -44,7 +44,7 @@ public class NaiveBayesTrainer {
 	private boolean check(double[][] stream){
 		if(stream.length == timeSteps){
 			if(stream[0].length == numberOfFrequences){
-				System.out.println("stream gecheckt");
+				//System.out.println("stream gecheckt");
 				return true;
 			}else{
 				System.out.println("Trainingsstream hat die falsche Anzahl von Reihen!!");
@@ -64,17 +64,17 @@ public class NaiveBayesTrainer {
 		}
 		if(index<trainingsSets.size()){
 			trainingsSets.get(index).addTrainingValue(stream);
-			System.out.println("added to index: " + 0);
+			//System.out.println("added to index: " + 0);
 		}else{
-			System.out.println("else fall");
+			//System.out.println("else fall");
 			index = trainingsSets.size();
-			System.out.println("index: " +index);
+			//System.out.println("index: " +index);
 			refreshDatabase(numberOfIntensity, numberOfFrequences, timeSteps, (numberOfPhonems+1));
-			System.out.println("database refreshed");
+			//System.out.println("database refreshed");
 			trainingsSets.add(new TrainingsSet(index, name, database));
-			System.out.println("Ins Trainingsset eingefügt");
+			//System.out.println("Ins Trainingsset eingefügt");
 			trainingsSets.get(index).addTrainingValue(stream);
-			System.out.println("added to index: " + index);
+			//System.out.println("added to index: " + index);
 			//refresh the new Database
 			
 		}
@@ -86,12 +86,12 @@ public class NaiveBayesTrainer {
 		this.numberOfFrequences = numberOfFrequences;
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
-		System.out.println("datenbanck erneuern");
+		//System.out.println("datenbanck erneuern");
 		database = null;
-		System.out.println("datenbank null");
-		System.out.println(numberOfIntensity + ", " + numberOfFrequences + ", " + timeSteps + ", " + numberOfPhonems);
+		//System.out.println("datenbank null");
+		//System.out.println(numberOfIntensity + ", " + numberOfFrequences + ", " + timeSteps + ", " + numberOfPhonems);
 		database = new Database(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
-		System.out.println("datenbank erneuert!");
+		//System.out.println("datenbank erneuert!");
 		for(int i=0;i<trainingsSets.size();i++){
 			trainingsSets.get(i).refresh();
 		}
