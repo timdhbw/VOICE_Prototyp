@@ -14,7 +14,7 @@ import dhbw.ai13.bayesClassificator.naiveBayes.*;;
  */
 
 public class NaiveBayesTrainer {
-	private Database database;
+	private Matrix database;
 	private ArrayList<TrainingsSet> trainingsSets;
 	private int numberOfIntensity;
 	private int numberOfFrequences;
@@ -27,7 +27,7 @@ public class NaiveBayesTrainer {
 		this.numberOfIntensity = numberOfIntensity; //notice it will devided /10
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
-		database = new Database(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
+		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
 		this.numberOfFrequences = numberOfFrequences/8;
 		trainingsSets = new ArrayList<TrainingsSet>();
 	}
@@ -90,7 +90,7 @@ public class NaiveBayesTrainer {
 		database = null;
 		//System.out.println("datenbank null");
 		//System.out.println(numberOfIntensity + ", " + numberOfFrequences + ", " + timeSteps + ", " + numberOfPhonems);
-		database = new Database(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
+		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
 		//System.out.println("datenbank erneuert!");
 		for(int i=0;i<trainingsSets.size();i++){
 			trainingsSets.get(i).refresh();
@@ -100,7 +100,7 @@ public class NaiveBayesTrainer {
 		
 	
 	//get the Database
-	public Database getDatabase(){
+	public Matrix getDatabase(){
 		return database;
 	}
 	

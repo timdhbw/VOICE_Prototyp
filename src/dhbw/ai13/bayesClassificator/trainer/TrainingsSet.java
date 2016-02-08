@@ -20,10 +20,10 @@ public class TrainingsSet {
 	private ArrayList<double[][]> trainingValues;
 	private int index;
 	private String name;
-	private Database database;
+	private Matrix database;
 
 	// constructor
-	public TrainingsSet(int index, String name, Database database) {
+	public TrainingsSet(int index, String name, Matrix database) {
 		this.trainingValues = new ArrayList<double[][]>();
 		this.index = index;
 		this.name = name;
@@ -48,19 +48,16 @@ public class TrainingsSet {
 				NormalDistribution normDistr = auxiliary(values, counter);
 				// System.out.println("normalverteilung erstellt");
 				// for every intensity one value of the BayesMatrix is chanced+
-				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
-					database.getData(intensity, frequence)
-							.setData(
-									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
-											- normDistr.cumulativeProbability((double) (intensity * 100))),
-									timeSteps, index);
+				for (int intensity = 0; intensity < database.getNumOfIntensities(); intensity++) {
+					database.setValue(
+							1 + (normDistr.cumulativeProbability((double) (intensity * 100 + 100))
+									- normDistr.cumulativeProbability((double) (intensity * 100))),
+							intensity, frequence, timeSteps, index);
 				}
 			}
 		}
 
 	}
-
-
 
 	// train database again for phonem of this TrainingsSet
 	public void refresh() {
@@ -83,12 +80,11 @@ public class TrainingsSet {
 				NormalDistribution normDistr = auxiliary(values, counter);
 				// System.out.println("normalverteilung erstellt");
 				// for every intensity one value of the BayesMatrix is chanced+
-				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
-					database.getData(intensity, frequence/8)
-							.setData(
-									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
-											- normDistr.cumulativeProbability((double) (intensity * 100))),
-									timeSteps, index);
+				for (int intensity = 0; intensity < database.getNumOfIntensities(); intensity++) {
+					database.setValue(
+							1 + (normDistr.cumulativeProbability((double) (intensity * 100 + 100))
+									- normDistr.cumulativeProbability((double) (intensity * 100))),
+							intensity, frequence, timeSteps, index);
 				}
 			}
 		}

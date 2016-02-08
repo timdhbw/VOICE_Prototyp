@@ -12,7 +12,7 @@ public class Test {
 		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_01.wav");
 		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 
 		String[] st = {"a"};
-		nbt.getDatabase().setNameOfRow(st);
+		nbt.getDatabase();
 		double[][] d = new double[10][32];
 		int t = 0;
 		double help = 0;

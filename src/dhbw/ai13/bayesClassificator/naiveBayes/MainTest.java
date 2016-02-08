@@ -19,7 +19,7 @@ public class MainTest {
 		System.out.println(a[0][0]+" "+a[0][1] + " " +a[0][2]);
 		System.out.println(b[0] + " " + b[1] + " " +b[2]);
 
-		Database data = new Database(10,10,6,8);
+		//Database data = new Database(10,10,6,8);
 //		System.out.println(data.getData(2,3).toString());
 //		System.out.println(data.getData(4,4).toString());
 //		System.out.println(data.getData(2, 2).getPossibility(2, 2));
