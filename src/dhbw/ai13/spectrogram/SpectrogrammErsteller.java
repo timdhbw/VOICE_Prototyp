@@ -2,6 +2,14 @@ package dhbw.ai13.spectrogram;
 import com.musicg.wave.Wave;
 import com.musicg.wave.extension.Spectrogram;
 
+/**
+ * 
+ * @author Rohmund, Tino
+ * 
+ * Klasse, die die musicg-API nutzt, um aus einer .wav-Datei ein Spektrogramm zu erstellen.
+ * Enthält ein zweidimensionales Array in dem die Daten des Spektrogramms gespeichert werden
+ *
+ */
 public class SpectrogrammErsteller {
 	
 	int fftSampleSize;
@@ -9,10 +17,17 @@ public class SpectrogrammErsteller {
 	
 	double[][] spectrogramData;
 
+	/**
+	 * Konstruktor der Spektrogramm-Klasse. 
+	 * 
+	 * @param fftSampleSize Integer, der die Sample Size der Fast Fourier Transformation zu Erstellung des Spektrogramms enthält
+	 * @param overlapFactor Integer, der den Overlap-Faktor der Transformation enthält
+	 * @param url Qualifizierter Pfad der zu analysierenden .wav-Datei
+	 */
 	
-	public SpectrogrammErsteller(int fftSampleSize, int overlapFactor, String file)
+	public SpectrogrammErsteller(int fftSampleSize, int overlapFactor, String url)
 	{
-		if(!file.contains("."))
+		if(!url.contains("."))
 		{
 			System.out.println("Kein File angegeben");
 		}
@@ -21,7 +36,7 @@ public class SpectrogrammErsteller {
 			setOverlapFactor(fftSampleSize);
 			setFftSampleSize(fftSampleSize);
 			
-			Wave wave = new Wave(file);
+			Wave wave = new Wave(url);
 			Spectrogram spectrogram = new Spectrogram(wave);
 			
 			setSpectrogramData(spectrogram.getAbsoluteSpectrogramData());
@@ -44,7 +59,11 @@ public class SpectrogrammErsteller {
 	private void setFftSampleSize(int fftSampleSize) {
 		this.fftSampleSize = fftSampleSize;
 	}
-
+	
+/**
+ * 
+ * @return zweidimensionaler Array mit den Intensitätswerten des Spektrogramm der analysierten .wav-Datei
+ */
 	public double[][] getSpectrogramData() {
 		return spectrogramData;
 	}
