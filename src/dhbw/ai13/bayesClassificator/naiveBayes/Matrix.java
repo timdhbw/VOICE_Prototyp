@@ -1,5 +1,9 @@
 package dhbw.ai13.bayesClassificator.naiveBayes;
 
+/*
+ * Das hier ist die Datenbank fuer den Bayes Classificator
+ */
+
 public class Matrix {
 	//double array for probability values [(int)Intensity][Frequence][TimeStep][Phonem]
 	private double[][][][] matrix;

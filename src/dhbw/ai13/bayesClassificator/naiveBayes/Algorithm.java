@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Erklaerung
- * import string[Real Time][Row of Spectometre] = Frequence
- * Database database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
+ * import stream[Real Time][Row of Spectometre] = Frequence
+ * Matrix database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
  * times = how many time steps is the length of a possible phonem
  * @author Tim Tiede
  */
@@ -62,8 +62,8 @@ public class Algorithm {
 	//=====================================================================================================
 	//gives results, that can be a result
 	/*
-	 * Eine Spalte des Streams wird durchsucht. Die Ergebnisse werden fuer je die ersten Zeitspalte der BayesMatrix
-	 * des Stream Ergebnisses rausgesucht und die einzelenen Spalten zusammengefuegt (nach Bayes mit mal)
+	 * Eine Spalte des Streams wird durchsucht. Die Ergebnisse werden fuer je die ersten Zeitspalte der Matrix
+	 * berechnet (Frequenzen weren durchgegangen)(berechnung nach Bayes mit mal)
 	 * Dieser Array wird nach Wahrscheinlichkeiten durchsucht, die ueber dem Minimum liegen, fuer die jeweiligen Indexe
 	 * werden Results erstellt;
 	 */
@@ -102,7 +102,7 @@ public class Algorithm {
 		//========================================================================================
 		
 		/*
-		 * Der Methode wird ein StartResult uebergeben und damit, an welchem Zeitindex dieses im Stream ist.
+		 * Der Methode wird ein StartResult uebergeben und , an welchem Zeitindex im Stream dieses ist.
 		 * In der Database werden nun von diesem Startzeitpunkt an fuer times Zeitschritte die Wahrscheinlichkeiten
 		 * errechnet.
 		 */

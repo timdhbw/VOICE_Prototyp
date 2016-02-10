@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import dhbw.ai13.bayesClassificator.naiveBayes.*;;
 
 /**
- * Der Trainer ist das Zentrale Objekt, hier sind alle bisher zum Training genutzten Objekte, sowie die Database
+ * Der Trainer ist das Zentrale Objekt, hier sind alle bisher zum Training genutzten Objekte, sowie die Matrix
  * gespeichert.
  * @author Tim Tiede
  */
