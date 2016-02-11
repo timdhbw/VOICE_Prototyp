@@ -9,39 +9,19 @@ import dhbw.ai13.spectrogram.SpectrogrammErsteller;
 public class Test {
 
 	public static void main(String[] args) {
+		//Spectogramm erstellen
 		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_01.wav");
-		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 
-		String[] st = {"a"};
-		nbt.getDatabase();
-		double[][] d = new double[10][32];
-		int t = 0;
-		double help = 0;
-		for(int i=0;i<d.length;i++){
-			for(int j=0;j<256;j++){
-				help = help + creater.getSpectrogramData()[i][j];
-				t = t +1;
-				if(t==8){
-					d[i][j/8] = help;
-					t=0;
-					help=0;
-				}
-			}
-			
-		}
+		double [][] d = creater.getSpectrogramData();	
+		
+		//NaiveBayesTrainer erstellen
+		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 		
+		
 		nbt.trainDatabase(d, "a");
 		System.out.println("Training 1 beendet");
 		 creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_02.wav");
-		for(int i=0;i<d.length;i++){
-			for(int j=0;j<256;j++){
-				help = help + creater.getSpectrogramData()[i][j];
-				if(t==8){
-					d[i][j/8] = help;
-					t = t+1;
-					t=0;
-					help=0;
-				}
-			}
-		}
+		 
+		 d = creater.getSpectrogramData();
+		
 		nbt.trainDatabase(d, "a");
 		System.out.println("Training 2 beendet");
 //		System.out.println("Database");
@@ -55,11 +35,11 @@ public class Test {
 //		for(int i=0;i<32;i++){
 //			System.out.println("Stichprobe("+j+","+i+",7,0):  " + nbt.getDatabase().getData(j, i).getPossibility(7, 0));
 //		}}
-		for(int i=0;i<d.length;i++){
-			for(int j=0;j<d[0].length;j++){
-				d[i][j] = d[i][j]/100;
-			}
-		}
+//		for(int i=0;i<d.length;i++){
+//			for(int j=0;j<d[0].length;j++){
+//				d[i][j] = d[i][j]/100;
+//			}
+//		}
 		Algorithm alg = new Algorithm(nbt.getDatabase(), d);
 		ArrayList<Result> res = alg.getBestResults();
 		System.out.println("Results berechnet");

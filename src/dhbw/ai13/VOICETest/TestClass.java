@@ -15,7 +15,7 @@ public class TestClass {
 		System.out.println("Eric Zenker 1 eingelesen");
 		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 
 		String[] st = {"a"};
-		nbt.getDatabase().setNameOfRow(st);
+		//nbt.getDatabase().setNameOfRow(st);
 		double[][] d = change1(creater);
 		System.out.println("Eric Zenker 1 eingefügt");
 		

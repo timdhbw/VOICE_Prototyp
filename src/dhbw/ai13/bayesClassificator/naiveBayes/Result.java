@@ -21,7 +21,7 @@ public class Result {
 	
 	//toString
 	public String toString(){
-		return new String("Name: " + name + ", Wahrscheinlichkeit: " + Double.toString(probability));
+		return new String("Name: " + name + ", Wahrscheinlichkeit: " + Double.toString(probability) + " Anfang: " + timeIndex);
 	}
 
 	//getter

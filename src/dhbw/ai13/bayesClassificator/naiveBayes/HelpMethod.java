@@ -74,8 +74,9 @@ public class HelpMethod {
 				help = help + stream[i][j];
 				time = time +1;
 				if(time==8){
-					nStream[i][j/8] = help;
+					nStream[i][j/8] = help/1000;
 					time=0;
+					//System.out.println("[" + i + "]" + "[" + j + "] = " +  help/1000);
 					help=0;
 				}
 			}	

@@ -23,7 +23,8 @@ public class Algorithm {
 		this.database = database;
 		this.stream =  HelpMethod.convertStream(stream);
 		this.times = 10; //default
-		this.minimumPossibility = 0.0000000000000000000000000005;//default
+		this.minimumPossibility = 1.000000000000001;//default
+		System.out.println(minimumPossibility);
 		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
@@ -41,7 +42,6 @@ public class Algorithm {
 	
 	public ArrayList<Result> getBestResults(){
 		ArrayList<Result> bestResult = new ArrayList<Result>();
-		//System.out.println("in get best result");
 		//startobjekte suchen, (-times, damit givenProbability nicht outOfBounce geht
 		//for timeSteps
 		for(int i=0;i<=(stream.length-times);i++){
@@ -70,7 +70,7 @@ public class Algorithm {
 	private ArrayList<Result> findStartResult(int timeIndex) {
 		//System.out.println("in find Start result");
 		ArrayList<Result> res = new ArrayList<Result>();
-		double[]startStream = stream[timeIndex];
+		double[] startStream = stream[timeIndex];
 		double[] buffer =  database.getProbArray((int)startStream[0], 0);
 		
 		//calculate probabilitys
@@ -109,27 +109,27 @@ public class Algorithm {
 		private Result givenProbability(Result startResult){
 			//stream[t = time][i = frequence] j = intensity
 			//System.out.println("in given probability");
-			int timeIndex = startResult.getTimeIndex();
+			int phonem = startResult.getIndex();
 			int intensity;
 			double pos = 1;
 			
 			int timeInMatrix = 1;
 			//time
-			for(int t=timeIndex+1;t<(times+timeIndex);t++){
+			for(int t=phonem+1;t<(times+phonem);t++){
 				
 				for(int i=0;i<stream[t].length;i++){
 					intensity = (int)stream[t][i];
 					if(intensity>100)intensity = 100;
-					pos = pos*(database.getValue(intensity, i, timeInMatrix, timeIndex));
+					pos = pos*(database.getValue(intensity, i, timeInMatrix, phonem));
 				}
 				//stop if OutOfBounce
 				if(t==(stream.length-1)){
 					//System.out.println("OutOfBounce: Stream is to short for given Probability");
-					t = times+timeIndex;
+					t = times+startResult.getIndex();
 				}
 					timeInMatrix++;
 			}
 			pos = pos*100*startResult.getProbability();
-			return new Result(startResult.getName(), pos, startResult.getIndex(), timeIndex);
+			return new Result(startResult.getName(), pos, phonem , startResult.getTimeIndex());
 		}
 }
