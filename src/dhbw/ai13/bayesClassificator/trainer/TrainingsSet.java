@@ -31,7 +31,8 @@ public class TrainingsSet {
 	}
 
 	// trainingsmodellwird zugefuegt
-	public void addTrainingValue(double[][] train) {
+	public void addTrainingValue(double[][] trainStream) {
+		double[][] train = HelpMethod.convertStream(trainStream);
 		trainingValues.add(train);
 
 		for (int timeSteps = 0; timeSteps < train.length; timeSteps++) {

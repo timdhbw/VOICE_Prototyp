@@ -26,7 +26,7 @@ public class Matrix {
 		this.setMatrix(new double[intensity][frequence][timeStep][phonem]);
 		this.setPhon(new String[phonem]);
 		this.numOfIntensities = intensity;
-		this.numOfFrequence = frequence;
+		this.numOfFrequence = frequence/8; //divided/8
 		this.numOfTimeStep = timeStep;
 		this.numOfPhonem = phonem;
 	}

@@ -24,11 +24,11 @@ public class NaiveBayesTrainer {
 	
 	//constructor
 	public NaiveBayesTrainer(int numberOfIntensity, int numberOfFrequences, int timeSteps, int numberOfPhonems){
-		this.numberOfIntensity = numberOfIntensity; //notice it will devided /10
+		this.numberOfIntensity = numberOfIntensity; //notice it will divided /10
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
 		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
-		this.numberOfFrequences = numberOfFrequences/8;
+		this.numberOfFrequences = numberOfFrequences/8; 
 		trainingsSets = new ArrayList<TrainingsSet>();
 	}
 	

@@ -21,7 +21,7 @@ public class Algorithm {
 	//Constructors
 	public Algorithm(Matrix database, double[][] stream){
 		this.database = database;
-		this.stream = stream;
+		this.stream =  HelpMethod.convertStream(stream);
 		this.times = 10; //default
 		this.minimumPossibility = 0.0000000000000000000000000005;//default
 		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
@@ -29,7 +29,7 @@ public class Algorithm {
 	
 	public Algorithm(Matrix database, double[][] stream, int times, double minimumPossibility){
 		this.database = database;
-		this.stream = stream;
+		this.stream = HelpMethod.convertStream(stream);
 		this.times = times;
 		this.minimumPossibility = minimumPossibility;
 	}
