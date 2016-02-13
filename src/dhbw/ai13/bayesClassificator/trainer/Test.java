@@ -3,6 +3,7 @@ package dhbw.ai13.bayesClassificator.trainer;
 import java.util.ArrayList;
 
 import dhbw.ai13.bayesClassificator.naiveBayes.Algorithm;
+import dhbw.ai13.bayesClassificator.naiveBayes.HelpMethod;
 import dhbw.ai13.bayesClassificator.naiveBayes.Result;
 import dhbw.ai13.spectrogram.SpectrogrammErsteller;
 
@@ -46,6 +47,9 @@ public class Test {
 		for(int i=0;i<res.size();i++){
 			System.out.println(res.get(i).toString());
 		}
+		
+		HelpMethod.copyAudio("resources/A_Eric_Zenker_01.wav", "resources/A_Eric_Zenker_01_cut.wav", 6, 600);
+		System.out.println("Done");
 	}
 
 }
