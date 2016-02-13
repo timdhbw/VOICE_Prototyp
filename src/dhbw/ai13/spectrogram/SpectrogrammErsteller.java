@@ -12,15 +12,15 @@ import com.musicg.wave.extension.Spectrogram;
  */
 public class SpectrogrammErsteller {
 	
-	int fftSampleSize;
-	int overlapFactor;
+	private int fftSampleSize;
+	private int overlapFactor;
 	
-	double[][] spectrogramData;
+	private double[][] spectrogramData;
 
 	/**
 	 * Konstruktor der Spektrogramm-Klasse. 
 	 * 
-	 * @param fftSampleSize Integer, der die Sample Size der Fast Fourier Transformation zu Erstellung des Spektrogramms enthält
+	 * @param fftSampleSize Integer, der die Sample Size der Fast Fourier Transformation zur Erstellung des Spektrogramms enthält
 	 * @param overlapFactor Integer, der den Overlap-Faktor der Transformation enthält
 	 * @param url Qualifizierter Pfad der zu analysierenden .wav-Datei
 	 */
