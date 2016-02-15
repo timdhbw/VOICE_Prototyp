@@ -22,9 +22,9 @@ public class Algorithm {
 	public Algorithm(Matrix database, double[][] stream){
 		this.database = database;
 		this.stream =  HelpMethod.convertStream(stream);
-		this.times = 10; //default
-		this.minimumPossibility = 1.000000000000001;//default
-		System.out.println(minimumPossibility);
+		this.times = database.getNumOfTimeSteps(); //default
+		this.minimumPossibility = 1.12;//default 1.000000000000001
+		//System.out.println(minimumPossibility);
 		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
@@ -81,6 +81,7 @@ public class Algorithm {
 		//create results for good probabilitys
 		for (int i = 0; i < buffer.length; i++) {
 			if (buffer[i] >= minimumPossibility) {
+				//System.out.println("added");
 				res.add(new Result(database.getPhonem()[i], buffer[i], i, timeIndex));
 			}
 		}
@@ -109,27 +110,31 @@ public class Algorithm {
 		private Result givenProbability(Result startResult){
 			//stream[t = time][i = frequence] j = intensity
 			//System.out.println("in given probability");
-			int phonem = startResult.getIndex();
+			int timeIndex = startResult.getTimeIndex();
+//			System.out.println("TimeIndex: " + timeIndex);
 			int intensity;
 			double pos = 1;
 			
 			int timeInMatrix = 1;
 			//time
-			for(int t=phonem+1;t<(times+phonem);t++){
-				
+
+			for(int t=timeIndex+1;t<(times+timeIndex)&& t<times;t++){
+				//System.out.println("TimeIndex: " + t);
 				for(int i=0;i<stream[t].length;i++){
+					System.out.println("okay");
 					intensity = (int)stream[t][i];
+					//break intensity down
 					if(intensity>100)intensity = 100;
-					pos = pos*(database.getValue(intensity, i, timeInMatrix, phonem));
+					pos = pos*(database.getValue(intensity, i, timeInMatrix, timeIndex));
 				}
 				//stop if OutOfBounce
 				if(t==(stream.length-1)){
 					//System.out.println("OutOfBounce: Stream is to short for given Probability");
-					t = times+startResult.getIndex();
+					t = Integer.MAX_VALUE;
 				}
 					timeInMatrix++;
 			}
 			pos = pos*100*startResult.getProbability();
-			return new Result(startResult.getName(), pos, phonem , startResult.getTimeIndex());
+			return new Result(startResult.getName(), pos, startResult.getIndex() , startResult.getTimeIndex());
 		}
 }

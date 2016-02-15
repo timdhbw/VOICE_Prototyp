@@ -50,6 +50,7 @@ public class Matrix {
 	
 	//get probability value
 	public double getValue(int intensity, int frequence, int timeStep, int phonem){
+		//System.out.println("Intensitaet: " + intensity + " Frequenz: " + frequence + " TimeStep: " + timeStep + " Phonem: " + phonem );
 		return matrix[intensity][frequence][timeStep][phonem];
 	}
 	

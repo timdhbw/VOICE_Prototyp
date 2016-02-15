@@ -69,7 +69,7 @@ public class TrainingsSet {
 		
 		for (int timeSteps = 0; timeSteps < database.getNumOfTimeSteps(); timeSteps++) {
 
-			System.out.println("läuft");
+			//System.out.println("läuft");
 			for (int frequence = 0; frequence < database.getNumOfFrequencies(); frequence++) {
 
 				double[] values = new double[trainingValues.size()];
