@@ -19,6 +19,7 @@ public class HelpMethod {
 
 	public static void copyAudio(String sourceFileName, String destinationFileName, int startMilliSecond,
 			int milliSecondsToCopy) {
+		startMilliSecond = startMilliSecond*21;
 		AudioInputStream inputStream = null;
 		AudioInputStream shortenedStream = null;
 		try {

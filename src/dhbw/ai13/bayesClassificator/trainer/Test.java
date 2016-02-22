@@ -60,7 +60,7 @@ public class Test {
 		System.out.println(p.toString());
 		
 		//wav-Datei ausschneiden
-		HelpMethod.copyAudio("resources/Til Schweiger/Til_Schweiger_Test.wav", "resources/Til Schweiger/TilCut.wav", p.getTimeIndex()*21, 200);
+		HelpMethod.copyAudio("resources/Til Schweiger/Til_Schweiger_Test.wav", "resources/Til Schweiger/TilCut.wav", p.getTimeIndex(), 200);
 		System.out.println("Done");
 	}
 
