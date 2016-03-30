@@ -1,5 +1,7 @@
 package dhbw.ai13.spectrogram;
 
+import java.io.File;
+
 public class main {
 
 	public static void main(String[] args) {
@@ -22,6 +24,9 @@ public class main {
 		
 		final double[][] spectrogramDaten = creater.getSpectrogramData();
 		datenAusgeben(spectrogramDaten);
+		
+		File data = chooser.getFile();
+		
 		
 		/*
 		 * Tims Modul:

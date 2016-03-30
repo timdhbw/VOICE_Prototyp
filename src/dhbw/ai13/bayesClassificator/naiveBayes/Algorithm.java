@@ -4,32 +4,33 @@ import java.util.ArrayList;
 
 /**
  * Erklaerung
- * import string[Real Time][Row of Spectometre] = Frequence
- * Database database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
+ * import stream[Real Time][Row of Spectometre] = Frequence
+ * Matrix database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
  * times = how many time steps is the length of a possible phonem
  * @author Tim Tiede
  */
 
 
 public class Algorithm {
-	private Database database;
+	private Matrix database;
 	private double[][] stream;
 	private int times;
 	private double minimumPossibility;
 	
 	
 	//Constructors
-	public Algorithm(Database database, double[][] stream){
+	public Algorithm(Matrix database, double[][] stream){
 		this.database = database;
-		this.stream = stream;
-		this.times = 10; //default
-		this.minimumPossibility = 0.0000000000000000000000000005;//default
-		System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
+		this.stream =  HelpMethod.convertStream(stream);
+		this.times = database.getNumOfTimeSteps(); //default
+		this.minimumPossibility = 1.12;//default 1.000000000000001
+		//System.out.println(minimumPossibility);
+		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
-	public Algorithm(Database database, double[][] stream, int times, double minimumPossibility){
+	public Algorithm(Matrix database, double[][] stream, int times, double minimumPossibility){
 		this.database = database;
-		this.stream = stream;
+		this.stream = HelpMethod.convertStream(stream);
 		this.times = times;
 		this.minimumPossibility = minimumPossibility;
 	}
@@ -41,7 +42,6 @@ public class Algorithm {
 	
 	public ArrayList<Result> getBestResults(){
 		ArrayList<Result> bestResult = new ArrayList<Result>();
-		System.out.println("in get best result");
 		//startobjekte suchen, (-times, damit givenProbability nicht outOfBounce geht
 		//for timeSteps
 		for(int i=0;i<=(stream.length-times);i++){
@@ -62,26 +62,27 @@ public class Algorithm {
 	//=====================================================================================================
 	//gives results, that can be a result
 	/*
-	 * Eine Spalte des Streams wird durchsucht. Die Ergebnisse werden fuer je die ersten Zeitspalte der BayesMatrix
-	 * des Stream Ergebnisses rausgesucht und die einzelenen Spalten zusammengefuegt (nach Bayes mit mal)
+	 * Eine Spalte des Streams wird durchsucht. Die Ergebnisse werden fuer je die ersten Zeitspalte der Matrix
+	 * berechnet (Frequenzen weren durchgegangen)(berechnung nach Bayes mit mal)
 	 * Dieser Array wird nach Wahrscheinlichkeiten durchsucht, die ueber dem Minimum liegen, fuer die jeweiligen Indexe
 	 * werden Results erstellt;
 	 */
 	private ArrayList<Result> findStartResult(int timeIndex) {
-		System.out.println("in find Start result");
+		//System.out.println("in find Start result");
 		ArrayList<Result> res = new ArrayList<Result>();
-		double[]startStream = stream[timeIndex];
-		double[] buffer =  database.getData((int)startStream[0], 0).getBeginningArray();
+		double[] startStream = stream[timeIndex];
+		double[] buffer =  database.getProbArray((int)startStream[0], 0);
 		
 		//calculate probabilitys
 		for (int i = 1; i < startStream.length; i++) {
-			buffer = this.convert(buffer, database.getData((int)startStream[i], i).getBeginningArray());
+			buffer = this.convert(buffer, database.getProbArray((int)startStream[i], i));
 		}
-		System.out.println(buffer[0]);
+		//System.out.println(buffer[0]);
 		//create results for good probabilitys
 		for (int i = 0; i < buffer.length; i++) {
 			if (buffer[i] >= minimumPossibility) {
-				res.add(new Result(database.getNameOfRow()[i], buffer[i], i, timeIndex));
+				//System.out.println("added");
+				res.add(new Result(database.getPhonem()[i], buffer[i], i, timeIndex));
 			}
 		}
 		return res;
@@ -91,9 +92,7 @@ public class Algorithm {
 		private double[] convert(double[] a, double[] b) {
 			double[] c = new double[a.length];
 			for (int i = 0; i < a.length; i++) {
-				//ändern!!!!!!!!!
-				// TODO Auto-generated method stub
-				c[i] = a[i] + b[i];
+				c[i] = a[i] * b[i];
 			}
 			return c;
 		}
@@ -104,36 +103,38 @@ public class Algorithm {
 		//========================================================================================
 		
 		/*
-		 * Der Methode wird ein StartResult uebergeben und damit, an welchem Zeitindex dieses im Stream ist.
+		 * Der Methode wird ein StartResult uebergeben und , an welchem Zeitindex im Stream dieses ist.
 		 * In der Database werden nun von diesem Startzeitpunkt an fuer times Zeitschritte die Wahrscheinlichkeiten
 		 * errechnet.
 		 */
 		private Result givenProbability(Result startResult){
 			//stream[t = time][i = frequence] j = intensity
-			System.out.println("in given probability");
+			//System.out.println("in given probability");
 			int timeIndex = startResult.getTimeIndex();
+//			System.out.println("TimeIndex: " + timeIndex);
 			int intensity;
 			double pos = 1;
 			
-			int timeInBayesMatrix = 1;
+			int timeInMatrix = 1;
 			//time
-			for(int t=timeIndex+1;t<(times+timeIndex);t++){
-				
+
+			for(int t=timeIndex+1;t<(times+timeIndex)&& t<times;t++){
+				//System.out.println("TimeIndex: " + t);
 				for(int i=0;i<stream[t].length;i++){
-					System.out.println("time in bayes matrix:" + timeInBayesMatrix);
+					System.out.println("okay");
 					intensity = (int)stream[t][i];
-					System.out.println(intensity);
+					//break intensity down
 					if(intensity>100)intensity = 100;
-					pos = pos*(database.getData(intensity,i).getPossibility(timeInBayesMatrix, timeIndex));
+					pos = pos*(database.getValue(intensity, i, timeInMatrix, timeIndex));
 				}
 				//stop if OutOfBounce
 				if(t==(stream.length-1)){
-					System.out.println("OutOfBounce: Stream is to short for given Probability");
-					t = times+timeIndex;
+					//System.out.println("OutOfBounce: Stream is to short for given Probability");
+					t = Integer.MAX_VALUE;
 				}
-					timeInBayesMatrix++;
+					timeInMatrix++;
 			}
 			pos = pos*100*startResult.getProbability();
-			return new Result(startResult.getName(), pos, startResult.getIndex(), timeIndex);
+			return new Result(startResult.getName(), pos, startResult.getIndex() , startResult.getTimeIndex());
 		}
 }

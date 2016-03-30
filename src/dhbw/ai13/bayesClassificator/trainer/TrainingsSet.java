@@ -20,10 +20,10 @@ public class TrainingsSet {
 	private ArrayList<double[][]> trainingValues;
 	private int index;
 	private String name;
-	private Database database;
+	private Matrix database;
 
 	// constructor
-	public TrainingsSet(int index, String name, Database database) {
+	public TrainingsSet(int index, String name, Matrix database) {
 		this.trainingValues = new ArrayList<double[][]>();
 		this.index = index;
 		this.name = name;
@@ -33,10 +33,10 @@ public class TrainingsSet {
 	// trainingsmodellwird zugefuegt
 	public void addTrainingValue(double[][] train) {
 		trainingValues.add(train);
+		database.setPhonem(name, index);
 
-		for (int timeSteps = 0; timeSteps < train.length; timeSteps++) {
-			for (int frequence = 0; frequence < trainingValues.get(0)[0].length; frequence++) {
-
+		for (int timeSteps = 0; timeSteps < database.getNumOfTimeSteps(); timeSteps++) {
+			for (int frequence = 0; frequence < database.getNumOfFrequencies(); frequence++) {
 				double[] values = new double[trainingValues.size()];
 				double counter = 0;
 
@@ -44,33 +44,33 @@ public class TrainingsSet {
 					values[trainVal] = trainingValues.get(trainVal)[timeSteps][frequence];
 					counter = counter + values[trainVal];
 				}
+				counter = counter/trainingValues.size();
 				// System.out.println("normalverteilung erstellen");
 				NormalDistribution normDistr = auxiliary(values, counter);
 				// System.out.println("normalverteilung erstellt");
 				// for every intensity one value of the BayesMatrix is chanced+
-				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
-					database.getData(intensity, frequence)
-							.setData(
-									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
-											- normDistr.cumulativeProbability((double) (intensity * 100))),
-									timeSteps, index);
+				for (int intensity = 0; intensity < database.getNumOfIntensities(); intensity++) {
+					database.setValue(
+							1 + (normDistr.cumulativeProbability((double) (intensity))
+									- normDistr.cumulativeProbability((double) (intensity-1))),
+							intensity, frequence, timeSteps, index);
 				}
 			}
 		}
 
 	}
 
-
-
 	// train database again for phonem of this TrainingsSet
 	public void refresh() {
 		if (trainingValues.isEmpty()) {
 			return;
 		}
-		for (int timeSteps = 0; timeSteps < trainingValues.get(0).length; timeSteps++) {
+		database.setPhonem(name, index);
+		
+		for (int timeSteps = 0; timeSteps < database.getNumOfTimeSteps(); timeSteps++) {
 
-			System.out.println("läuft");
-			for (int frequence = 0; frequence < trainingValues.get(0)[0].length; frequence++) {
+			//System.out.println("läuft");
+			for (int frequence = 0; frequence < database.getNumOfFrequencies(); frequence++) {
 
 				double[] values = new double[trainingValues.size()];
 				double counter = 0;
@@ -79,16 +79,16 @@ public class TrainingsSet {
 					values[trainVal] = trainingValues.get(trainVal)[timeSteps][frequence];
 					counter = counter + values[trainVal];
 				}
+				counter = counter/trainingValues.size();
 				// System.out.println("normalverteilung erstellen");
 				NormalDistribution normDistr = auxiliary(values, counter);
 				// System.out.println("normalverteilung erstellt");
 				// for every intensity one value of the BayesMatrix is chanced+
-				for (int intensity = 0; intensity < database.getNumberOfIntensity(); intensity++) {
-					database.getData(intensity, frequence/8)
-							.setData(
-									(normDistr.cumulativeProbability((double) (intensity * 100 + 100))
-											- normDistr.cumulativeProbability((double) (intensity * 100))),
-									timeSteps, index);
+				for (int intensity = 0; intensity < database.getNumOfIntensities(); intensity++) {
+					database.setValue(
+							1 + (normDistr.cumulativeProbability((double) (intensity))
+									- normDistr.cumulativeProbability((double) (intensity-1))),
+							intensity, frequence, timeSteps, index);
 				}
 			}
 		}
