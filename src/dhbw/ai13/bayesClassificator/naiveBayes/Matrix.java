@@ -1,5 +1,6 @@
 package dhbw.ai13.bayesClassificator.naiveBayes;
 
+
 /*
  * Das hier ist die Datenbank fuer den Bayes Classificator
  */
@@ -13,6 +14,7 @@ public class Matrix {
 	private int numOfFrequence;
 	private int numOfTimeStep;
 	private int numOfPhonem;
+	private int maxIntensity;
 	
 	//string for name of phonems
 	private String[] phonem;
@@ -22,13 +24,14 @@ public class Matrix {
 	public Matrix(){
 	}
 	
-	public Matrix(int intensity, int frequence, int timeStep, int phonem){
+	public Matrix(int intensity, int frequence, int timeStep, int phonem, int maxIntensity){
 		this.setMatrix(new double[intensity][frequence][timeStep][phonem]);
 		this.setPhon(new String[phonem]);
 		this.numOfIntensities = intensity;
 		this.numOfFrequence = frequence;
 		this.numOfTimeStep = timeStep;
 		this.numOfPhonem = phonem;
+		this.maxIntensity = maxIntensity;
 	}
 	
 	//gets Array of start (timeStep == 0) probabilities
@@ -86,6 +89,10 @@ public class Matrix {
 		this.phonem = phonem;
 	}
 	
+	public void setMaxIntensity(int maxIntensity) {
+		this.maxIntensity = maxIntensity;
+	}
+	
 	public int getNumOfIntensities(){
 		return numOfIntensities;
 	}
@@ -97,5 +104,8 @@ public class Matrix {
 	public int getNumOfTimeSteps(){
 		return numOfTimeStep;
 	}
-	
+
+	public int getMaxIntensity() {
+		return maxIntensity;
+	}
 }

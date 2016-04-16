@@ -18,21 +18,37 @@ public class NaiveBayesTrainer {
 	private int numberOfFrequences;
 	private int timeSteps;
 	private int numberOfPhonems;
+	//default maxIntensity = 10000
+	private int maxIntensity = 10000;
 
-	// constructor
+	// constructors
+	//maxIntensity default on 10000
 	public NaiveBayesTrainer(int numberOfIntensity, int numberOfFrequences, int timeSteps, int numberOfPhonems) {
-		this.numberOfIntensity = numberOfIntensity; // notice it will divided
-													// /10
+		this.numberOfIntensity = numberOfIntensity; 
 		this.timeSteps = timeSteps;
 		this.numberOfPhonems = numberOfPhonems;
-		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
-		this.numberOfFrequences = numberOfFrequences/8;
+		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems, maxIntensity);
+		this.numberOfFrequences = numberOfFrequences;
+		trainingsSets = new ArrayList<TrainingsSet>();
+	}
+	
+	public NaiveBayesTrainer(int numberOfIntensity, int numberOfFrequences, int timeSteps, int numberOfPhonems, int maxIntensity) {
+		this.numberOfIntensity = numberOfIntensity; 
+		this.timeSteps = timeSteps;
+		this.numberOfPhonems = numberOfPhonems;
+		this.maxIntensity = maxIntensity;
+		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems, maxIntensity);
+		this.numberOfFrequences = numberOfFrequences;
 		trainingsSets = new ArrayList<TrainingsSet>();
 	}
 
+	
+	
+	
 	// train the Database with a new stream
 	public void trainDatabase(double[][] firstStream, String name) {
-		double[][] stream = HelpMethod.convertStream(firstStream);
+		double[][] stream = HelpMethod.convertStream(firstStream, numberOfIntensity, database.getMaxIntensity()/numberOfIntensity, firstStream[0].length/database.getNumOfFrequencies());
+		stream = HelpMethod.streamNormalizer(stream);
 		if (check(stream)) {
 			addToTrainingsSet(stream, name);
 		}
@@ -105,7 +121,7 @@ public class NaiveBayesTrainer {
 		// System.out.println("datenbank null");
 		// System.out.println(numberOfIntensity + ", " + numberOfFrequences + ",
 		// " + timeSteps + ", " + numberOfPhonems);
-		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems);
+		database = new Matrix(numberOfIntensity, numberOfFrequences, timeSteps, numberOfPhonems, maxIntensity);
 		// System.out.println("datenbank erneuert!");
 		for (int i = 0; i < trainingsSets.size(); i++) {
 			trainingsSets.get(i).refresh();

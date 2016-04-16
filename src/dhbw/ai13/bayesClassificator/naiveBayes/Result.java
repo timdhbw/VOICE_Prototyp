@@ -2,6 +2,9 @@ package dhbw.ai13.bayesClassificator.naiveBayes;
 
 /**
  * Um die möglichen Resultate zu speichern
+ * name = name
+ * index = phonem
+ * timeIndex = timeIndex im Stream
  * @author Tim Tiede
  */
 

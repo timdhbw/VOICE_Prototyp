@@ -3,6 +3,7 @@ package dhbw.ai13.VOICETest;
 import java.util.ArrayList;
 
 import dhbw.ai13.bayesClassificator.naiveBayes.Algorithm;
+import dhbw.ai13.bayesClassificator.naiveBayes.HelpMethod;
 import dhbw.ai13.bayesClassificator.naiveBayes.Result;
 import dhbw.ai13.bayesClassificator.trainer.NaiveBayesTrainer;
 import dhbw.ai13.spectrogram.SpectrogrammErsteller;
@@ -11,35 +12,93 @@ public class TestClass {
 
 	public static void main(String[] args) {
 		System.out.println("Starte VOICE");
-		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_01.wav");
-		System.out.println("Eric Zenker 1 eingelesen");
-		NaiveBayesTrainer nbt = new NaiveBayesTrainer(10000, 256, 10, 0); 
-		String[] st = {"a"};
-		//nbt.getDatabase().setNameOfRow(st);
-		double[][] d = change1(creater);
-		System.out.println("Eric Zenker 1 eingefügt");
+		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/erstes.wav");
+		System.out.println("0");
+		double[][] d = creater.getSpectrogramData();
+		
+		NaiveBayesTrainer nbt = new NaiveBayesTrainer(100, 128, 3, 0);
 		
 		nbt.trainDatabase(d, "a");
-		 creater = new SpectrogrammErsteller(1024, 0, "resources/A_Eric_Zenker_02.wav");
-		d = change1(creater);
-		System.out.println("Eric Zenker 2 eingelesen");
 		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/erstes.wav");
+		d = creater.getSpectrogramData();
 		nbt.trainDatabase(d, "a");
-		System.out.println("Eric Zenker 2 eingefügt");
 		
-		System.out.println("Training beendet");
+		System.out.println("1");
 		
-		d = changer2(d);
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/zweites.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
 		
-		Algorithm alg = new Algorithm(nbt.getDatabase(), d);
+		System.out.println("2");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/drittes.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("3");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/viertes.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("4");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/fuenftes.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("5");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/sechstes.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("6");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/siebtens.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("7");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/achtens.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("8");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/neuntens.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("9");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/zehn.wav");
+		d = creater.getSpectrogramData();
+		nbt.trainDatabase(d, "a");
+		
+		System.out.println("Fertig");
+		
+		creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/php10 zum testen.wav");
+		d = creater.getSpectrogramData();
+		
+		Algorithm alg = new Algorithm(nbt.getDatabase(), d, 5);
 		ArrayList<Result> res = alg.getBestResults();
-		System.out.println("Datei 1 verglichen");
-
+		int count = 1;
 		for(int i=0;i<res.size();i++){
-			System.out.println(res.get(i).toString());
+			if(res.get(i).getProbability() > 2700000){
+				String p = "resources/Test As/cutted/A"+count+".wav";
+				HelpMethod.copyAudio("resources/Test As/php10 zum testen.wav", p, res.get(i).getTimeIndex(), 200, 10);
+				count++;
+				System.out.println(res.get(i).toString() + "      count: " +  count);	
+			}		
+		}
+		
+		
 		}
 
-	}
+
 	
 	
 	
