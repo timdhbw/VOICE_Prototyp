@@ -2,10 +2,11 @@ package dhbw.ai13.bayesClassificator.naiveBayes;
 
 import java.util.ArrayList;
 
+
 /**
  * Erklaerung
- * import stream[Real Time][Row of Spectometre] = Frequence
- * Matrix database[Intensity][Row of Spectometre] = BayesMatrix -> BayesMatrix[time in phoneme][index of phoneme] = probability
+ * import stream[Real Time][Frequence] = Intensity
+ * Matrix database[Intensity][Frequence][time in phoneme][index of phoneme] = probability
  * times = how many time steps is the length of a possible phonem
  * @author Tim Tiede
  */
@@ -14,24 +15,23 @@ import java.util.ArrayList;
 public class Algorithm {
 	private Matrix database;
 	private double[][] stream;
-	private int times;
 	private double minimumPossibility;
 	
 	
 	//Constructors
 	public Algorithm(Matrix database, double[][] stream){
 		this.database = database;
-		this.stream =  HelpMethod.convertStream(stream);
-		this.times = database.getNumOfTimeSteps(); //default
-		this.minimumPossibility = 1.12;//default 1.000000000000001
+		double[][] helpStream =  HelpMethod.convertStream(stream, database.getNumOfIntensities(), database.getMaxIntensity()/database.getNumOfIntensities(), stream[0].length/database.getNumOfFrequencies());
+		this.stream = HelpMethod.streamNormalizer(helpStream);
+		this.minimumPossibility = 5;//default 
 		//System.out.println(minimumPossibility);
 		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
-	public Algorithm(Matrix database, double[][] stream, int times, double minimumPossibility){
+	public Algorithm(Matrix database, double[][] stream, double minimumPossibility){
 		this.database = database;
-		this.stream = HelpMethod.convertStream(stream);
-		this.times = times;
+		double[][] helpStream = HelpMethod.convertStream(stream, database.getNumOfIntensities(), database.getMaxIntensity()/database.getNumOfIntensities(), stream[0].length/database.getNumOfFrequencies());
+		this.stream = HelpMethod.streamNormalizer(helpStream);
 		this.minimumPossibility = minimumPossibility;
 	}
 	
@@ -44,7 +44,7 @@ public class Algorithm {
 		ArrayList<Result> bestResult = new ArrayList<Result>();
 		//startobjekte suchen, (-times, damit givenProbability nicht outOfBounce geht
 		//for timeSteps
-		for(int i=0;i<=(stream.length-times);i++){
+		for(int i=0;i<=(stream.length-database.getNumOfTimeSteps());i++){
 			bestResult.addAll(findStartResult(i));
 		}
 		
@@ -88,7 +88,7 @@ public class Algorithm {
 		return res;
 	}
 	
-	// get naive Bayes possibility of two arrays
+	// multiply the two "start arrays"
 		private double[] convert(double[] a, double[] b) {
 			double[] c = new double[a.length];
 			for (int i = 0; i < a.length; i++) {
@@ -110,28 +110,19 @@ public class Algorithm {
 		private Result givenProbability(Result startResult){
 			//stream[t = time][i = frequence] j = intensity
 			//System.out.println("in given probability");
-			int timeIndex = startResult.getTimeIndex();
 //			System.out.println("TimeIndex: " + timeIndex);
 			int intensity;
 			double pos = 1;
 			
 			int timeInMatrix = 1;
 			//time
-
-			for(int t=timeIndex+1;t<(times+timeIndex)&& t<times;t++){
+			for(int t=startResult.getTimeIndex()+1;t<(database.getNumOfTimeSteps()+startResult.getTimeIndex())&& t<stream.length;t++){
 				//System.out.println("TimeIndex: " + t);
 				for(int i=0;i<stream[t].length;i++){
-					System.out.println("okay");
 					intensity = (int)stream[t][i];
-					//break intensity down
-					if(intensity>100)intensity = 100;
-					pos = pos*(database.getValue(intensity, i, timeInMatrix, timeIndex));
+					pos = pos*(database.getValue(intensity, i, timeInMatrix, startResult.getIndex()));
 				}
 				//stop if OutOfBounce
-				if(t==(stream.length-1)){
-					//System.out.println("OutOfBounce: Stream is to short for given Probability");
-					t = Integer.MAX_VALUE;
-				}
 					timeInMatrix++;
 			}
 			pos = pos*100*startResult.getProbability();

@@ -18,8 +18,8 @@ import javax.sound.sampled.AudioSystem;
 public class HelpMethod {
 
 	public static void copyAudio(String sourceFileName, String destinationFileName, int startMilliSecond,
-			int milliSecondsToCopy) {
-		startMilliSecond = startMilliSecond*21;
+			int milliSecondsToCopy, int multiplication) {
+		startMilliSecond = startMilliSecond*multiplication;
 		AudioInputStream inputStream = null;
 		AudioInputStream shortenedStream = null;
 		try {
@@ -65,17 +65,27 @@ public class HelpMethod {
 		}
 	}
 	
-	//methode to convert the stream to stream[time][32] 
-	public static double[][] convertStream(double[][] stream){
-		double[][] nStream = new double[stream.length][32];
+	/*
+	 * methode to convert the stream
+	 * the frequency is split by the frequencySplit and the intensity ist split by intensitySplit
+	 * the result ist stream[time][frequency/frequencySplit] = intensity/intensitySplit
+	 */
+	public static double[][] convertStream(double[][] stream, int maxIntensity, int intensitySplit, int frequencySplit){
+		double[][] nStream = new double[stream.length][stream[0].length/frequencySplit];
 		int time = 0;
 		double help = 0;
 		for(int i=0;i<stream.length;i++){
-			for(int j=0;j<256;j++){
+			for(int j=0;j<nStream[0].length;j++){
 				help = help + stream[i][j];
 				time = time +1;
-				if(time==8){
-					nStream[i][j/8] = help/1000;
+				if(time==frequencySplit){
+					help = help/frequencySplit;
+					//to be sure that Intensity is not to high
+					if(help/intensitySplit < maxIntensity){
+						nStream[i][j/frequencySplit] = help/intensitySplit;
+					}else{
+						nStream[i][j/frequencySplit] = maxIntensity-1;
+					}
 					time=0;
 					//System.out.println("[" + i + "]" + "[" + j + "] = " +  help/1000);
 					help=0;
@@ -83,6 +93,29 @@ public class HelpMethod {
 			}	
 		}
 		return nStream;
+	}
+	
+	//normalization of the stream (Vektor per timeStep)
+	public static double[][] streamNormalizer(double [][] stream){
+		//Werte durch die der Array geteilt wird, fuer jeden timeStep eins
+		double [] divider = new double[stream.length];
+		
+		//divider wird aufgefuellt
+		for(int i=0;i<stream.length;i++){
+			double dividerHelp = 0;
+			for(int j=0;j<stream[i].length;j++){
+				dividerHelp = dividerHelp + stream[i][j];
+			}
+			divider[i] = dividerHelp;
+		}
+		
+		//normalisation des Streams
+		for(int i=0;i<stream.length;i++){
+			for(int j=0;j<stream[i].length;j++){
+				stream[i][j] = stream[i][j]/divider[i];
+			}
+		}
+		return stream;
 	}
 	
 }
