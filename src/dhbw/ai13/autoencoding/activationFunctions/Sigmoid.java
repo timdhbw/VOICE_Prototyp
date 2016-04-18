@@ -1,7 +1,5 @@
 package dhbw.ai13.autoencoding.activationFunctions;
 
-import dhbw.ai13.autoencoding.ActivationFunction;
-
 public class Sigmoid implements ActivationFunction {
 
     @Override

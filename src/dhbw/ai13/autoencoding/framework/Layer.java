@@ -66,7 +66,12 @@ public class Layer {
                     double sum = 0.0;
                     double[] prevActivations = prevLayer.getActivations();
                     for(int j = 0; j < weights[0].length; j++){ //loop for each prev node
-                        sum += weights[i][j] * prevActivations[j];
+                        try {
+                            sum += weights[i][j] * prevActivations[j];
+                        }catch (ArrayIndexOutOfBoundsException e){
+                            System.out.println(e);
+                        }
+
                     }
                     z[i] = sum + bias[i];
                     activations[i] = activationFunction.function(z[i]);
@@ -127,9 +132,9 @@ public class Layer {
     public String toString(){
         String str = "[Layer" + index + "] in:" + countIn + ", out:" + countOut + "\n";
         if(prevLayer != null) {
-            for (int i = 0; i < countNodes; i++) {
+            for (int i = 0; i < countNodes; i += 100) {
                 str += "--[Node" + (i + 1) + "] weights{";
-                for (int j = 0; j < countIn; j++) {
+                for (int j = 0; j < countIn; j += 100) {
                     str += weights[i][j] + ";";
                 }
                 str += "} bias{" + bias[i] + "}\n";

@@ -5,7 +5,7 @@ import javax.sound.sampled.AudioInputStream;
 import java.io.IOException;
 
 /**
- * Represents a StreamReader for AudioInputStreams, that can be used to read the Samples of an audio file.
+ * Represents a StreamReader for AudioInputStreams, that can be used to readFromFile the Samples of an audio file.
  * @implNote This reader only reads the first audio channel, even if there are more
  * @author David S.
  * @author Felix H.
@@ -17,7 +17,7 @@ public class AudioStreamReader {
 
     /**
      * Creates a new AudioStreamReader from the given AudioInputStream
-     * @param inputStream The input stream, that is going to be read
+     * @param inputStream The input stream, that is going to be readFromFile
      */
     public AudioStreamReader(AudioInputStream inputStream) {
         stream = inputStream;
@@ -73,7 +73,7 @@ public class AudioStreamReader {
     /**
      * Reads all samples in the AudioInputStream as normalized doubles from -1 to 1.
      * This function reads the samples of multiple channels
-     * @param  n Number of channels which should be read
+     * @param  n Number of channels which should be readFromFile
      * @return An array of doubles that represent the audio samples, within the normalized value range of -1 to 1
      * @throws IOException
      */

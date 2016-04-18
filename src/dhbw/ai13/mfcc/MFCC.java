@@ -15,11 +15,11 @@ public class MFCC {
     double DEFAULT_WINDOW_LENGTH = 0.050;
     // The default offset in seconds between two overlapping windows
     private static final double DEFAULT_WINDOW_STEP = 0.025;
-    // The length of the dft to use
+    // The length of the dft to compute
     private static final int DEFAULT_DFT_SIZE = 512;
     // The number of mfcc coefficients
     private static final int DEFAULT_MFCC_COEFFICIENTS = 13;
-    // The number of mel filter banks to use for mfcc
+    // The number of mel filter banks to compute for mfcc
     private static final int DEFAULT_MEL_FILTER_COUNT = DEFAULT_MFCC_COEFFICIENTS *2;
     // The default preemphasis filter strength. Valid values are smaller than 1
     private static final double DEFAULT_PREEMPHASIS = 0.95;
@@ -68,7 +68,7 @@ public class MFCC {
      * @param sampleRate The rate at with the audio signal has been sampled in samples per second
      * @param windowLength The length in seconds of one window for which the mfcc is calculated
      * @param windowStep The offset in seconds between two overlapping windows
-     * @param dftLength The length of the discrete fourier transform to use for mfcc calculation
+     * @param dftLength The length of the discrete fourier transform to compute for mfcc calculation
      * @param preEmphasis The strength of the preEmphasis filter applied on the given signal. Valid values are smaller than 1
      * @param liferingAmount The amount of liftering that is applied on the mfcc coefficients
      * @param appendDerivation Whether to append the first derivation of the mfcc coefficients (derived over several frames) to the results
@@ -240,9 +240,9 @@ public class MFCC {
     /**
      * Calculates a specified number of energies in a framed audio frequency spectrum using the same number of filter banks
      * @param framedSpectrum The frequency spectrum for each frame
-     * @param filterCount The number of filter banks to use
+     * @param filterCount The number of filter banks to compute
      * @param sampleRate The sample rate of the original audio signal
-     * @param filterLength The length of each filter bank (You typically want to use the length of your previous dft)
+     * @param filterLength The length of each filter bank (You typically want to compute the length of your previous dft)
      */
     private double[][] calculateEnergies(final double[][] framedSpectrum, int filterCount, final int sampleRate, final int filterLength) {
         // create as many triangular filterbanks as requested
@@ -385,7 +385,7 @@ public class MFCC {
      * @param lowerFrequency The lowest frequency the filter banks have to cover
      * @param upperFrequency The highest frequency the filter banks have to cover
      * @param sampleRate The sampleRate of the signal to create the filter bank for
-     * @param filterLength The number of discrete points you want to calculate for each filter bank. (You typically want to use the length of your dft)
+     * @param filterLength The number of discrete points you want to calculate for each filter bank. (You typically want to compute the length of your dft)
      */
     private double[][] createMelFilterbanks(final int amount, final double lowerFrequency, final double upperFrequency, final int sampleRate, final int filterLength) {
         final double lowerMel = toMel(lowerFrequency);

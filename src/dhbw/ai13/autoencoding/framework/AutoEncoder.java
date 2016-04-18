@@ -1,14 +1,22 @@
 package dhbw.ai13.autoencoding.framework;
 
+import com.musicg.dsp.WindowFunction;
+import dhbw.ai13.audio.AudioStreamReader;
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 import dhbw.ai13.autoencoding.exceptions.AutoEncoderException;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 public class AutoEncoder {
     //AutoEncoder
-    private boolean buildStatus = false;
+    private boolean isBuild = false;
     //Layers
     private ArrayList<Layer> layers;
     private Layer inputLayer;
@@ -20,6 +28,7 @@ public class AutoEncoder {
     private AutoEncoderDataHandler dataHandler;
     private ActivationFunction activationFunction;
     private final boolean DEBUG = true;
+
 
     public AutoEncoder(){
         countLayers = 0;
@@ -52,51 +61,15 @@ public class AutoEncoder {
         inputLayer = layers.get(0);
         outputLayer = layers.get(countLayers-1);
         trainingsError = new TrainingsError();
-        //dataHandler.readFromFile(this, "autoencoder.txt");
-        buildStatus = true;
+        isBuild = true;
         if(DEBUG){System.out.println("[DEBUG] Built successfull.");}
     }
 
-    public void train(double[][] trainingsData, double error, int maxIterations, int miniBatchSize) throws AutoEncoderException {
-        if(buildStatus){
-            if (trainingsData[0].length != inputLayer.getCountOut() || trainingsData[0].length != outputLayer.getCountOut()){
-                throw new AutoEncoderException("Trainings data length does not match to input / output layer");
-            }
-            if (miniBatchSize > trainingsData.length){
-                throw new AutoEncoderException("Mini Batch Size bigger than input or output data length");
-            }
-            iterations = 0;
-            do {
-                double[][] subset = shuffleTrainingsData(trainingsData, miniBatchSize);
-                update_mini_batch(subset);
-                iterations++;
-                if(DEBUG && (iterations%100) == 0){ System.out.printf("[DEBUG] (%d/%d) - Error Rate: %f\n",iterations,maxIterations,trainingsError.getErrorRate());}
-            }while(trainingsError.getErrorRate() > error && iterations < maxIterations);
-            if(DEBUG) {System.out.printf("[DEBUG] Final error rate: %f\n", trainingsError.getErrorRate());}
-            dataHandler.saveIntoFile(this, "autoencoder.txt");
-        }else{
-            throw new AutoEncoderException("AutoEncoder not built.");
-        }
-    }
 
-    public double[][] shuffleTrainingsData(double[][] trainingsData, int length){
-        double[][] subset = new double[length][];
-        Random r = new Random();
-        ArrayList<Integer> list = new ArrayList<>();
-        int index;
-        for(int i = 0; i < length; i++){
-            index = r.nextInt(trainingsData.length);
-            while(list.contains(new Integer(index))){
-                index = r.nextInt(trainingsData.length);
-            }
-            list.add(index);
-            subset[i] = trainingsData[index];
-        }
-        return subset;
-    }
+
 
     public double[] feedForward(double [] xy) throws AutoEncoderException {
-        if(buildStatus){
+        if(isBuild){
             for(int i = 0; i < countLayers; i++){
                 layers.get(i).resetValues();
             }
@@ -286,6 +259,46 @@ public class AutoEncoder {
         return layers.get(countLayers-1);
     }
 
+    //public double[][]  windowing(File audioFile, final double windowLength, final double windowStep) throws IOException, UnsupportedAudioFileException {
+    public double[][]  windowing(File audioFile, final int windowSampleLength, final int windowSampleStep) throws IOException, UnsupportedAudioFileException {
+        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+        AudioStreamReader reader = new AudioStreamReader(audioInputStream);
+        //return automatically normalised double values
+        double[] samples = reader.readSamples();
+        final int sampleRate = (int) reader.getSampleRate();
+
+        final int windowSampleCount = windowSampleLength;
+        final int offsetSampleCount = windowSampleStep;
+        //final int windowSampleCount = (int) (sampleRate * windowLength);
+        //final int offsetSampleCount = (int) (sampleRate * windowStep);
+        final int windowCount = getWindowCount(samples,windowSampleCount,offsetSampleCount);
+
+        final double[][] windowedSamples = new double[windowCount][windowSampleCount];
+
+        WindowFunction windowFunction = new WindowFunction();
+        windowFunction.setWindowType(3);
+        double[] windowValues = windowFunction.generate(windowSampleCount);
+        //System.out.println("WindowSampleCount:" + windowSampleCount);
+        //System.out.println("HammingWindowLength:" + windowValues.length);
+        IntStream.range(0, windowedSamples.length).parallel().forEach(i -> {
+            final int startOffset = i * offsetSampleCount;
+            // fill the frame with the portion of the signal, weighted with a hamming window
+            IntStream.range(0, windowedSamples[i].length).parallel().forEach(j -> {
+                if (startOffset + j < samples.length)
+                    windowedSamples[i][j] = samples[startOffset + j] * windowValues[j];
+            });
+        });
+        return windowedSamples;
+    }
+
+    private int getWindowCount(final double[] samples, final int windowSampleCount, final int offsetSampleCount) {
+        int windowCount = 1;
+        for (int i = samples.length - windowSampleCount; i > 0; i-= offsetSampleCount) {
+            windowCount++;
+        }
+        return windowCount;
+    }
+
     public String toString(){
         StringBuilder sb = new StringBuilder();
         StringBuilder sbLayer = new StringBuilder();
@@ -308,5 +321,13 @@ public class AutoEncoder {
 
     public boolean isDEBUG() {
         return DEBUG;
+    }
+
+    public boolean isBuild() {
+        return isBuild;
+    }
+
+    public TrainingsError getTrainingsError() {
+        return trainingsError;
     }
 }
