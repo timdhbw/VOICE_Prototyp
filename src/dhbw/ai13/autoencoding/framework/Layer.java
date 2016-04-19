@@ -33,11 +33,11 @@ public class Layer {
             weights = new double[countNodes][prevLayer.getCountNodes()];
             for(int i = 0; i < weights.length; i++){
                 for(int j = 0; j < weights[0].length; j++){
-                    weights[i][j] = 1.0;
+                    weights[i][j] = Math.random();
                 }
             }
             for(int i = 0; i < bias.length; i++){
-                bias[i] = 1.0;
+                bias[i] = 0.0;
             }
         }
     }

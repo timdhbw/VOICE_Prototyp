@@ -1,6 +1,7 @@
 package dhbw.ai13.autoencoding;
 
 import dhbw.ai13.autoencoding.activationFunctions.Sigmoid;
+import dhbw.ai13.autoencoding.activationFunctions.TanH;
 import dhbw.ai13.autoencoding.framework.AudiofileHandler;
 import dhbw.ai13.autoencoding.framework.AutoEncoder;
 
@@ -19,7 +20,7 @@ public class AutoEncoderTest {
         // Init Autoencoder
         AutoEncoder autoencoder = new AutoEncoder();
         autoencoder.setLearningRate(3.0);
-        autoencoder.setActivationFunction(new Sigmoid());
+        autoencoder.setActivationFunction(new TanH());
         autoencoder.addLayer(1).out(numInOutLayer);
         autoencoder.addLayer(2).in(numInOutLayer).out(numMidLayer);
         autoencoder.addLayer(3).in(numMidLayer).out(numInOutLayer);
@@ -28,11 +29,13 @@ public class AutoEncoderTest {
         // Reading Trainingsdata
         //double[][] trainingsData = new TrainingsData().readFromFile("C:\\Users\\GomaTa\\Documents\\Training.csv");
         AudiofileHandler afh = new AudiofileHandler();
-        File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources");
+        File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
 
         // Train Autoencoder
         AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder);
-        aet.train(trainingsData, 0.1, 10);
+        aet.train(trainingsData, 20, 10);
+        autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"),numMidLayer);
+        //aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
 
 
 

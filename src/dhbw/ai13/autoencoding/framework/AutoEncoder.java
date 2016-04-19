@@ -28,6 +28,7 @@ public class AutoEncoder {
     private AutoEncoderDataHandler dataHandler;
     private ActivationFunction activationFunction;
     private final boolean DEBUG = true;
+    private int WINDOW_SAMPLE_SIZE = 2000;
 
 
     public AutoEncoder(){
@@ -65,21 +66,35 @@ public class AutoEncoder {
         if(DEBUG){System.out.println("[DEBUG] Built successfull.");}
     }
 
+    public double[] encode(File file, int countCoefficients) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
+        double[] coefficients = new double[countCoefficients];
+        if (isBuild) {
+            double[][] windowedData = windowing(file, WINDOW_SAMPLE_SIZE, WINDOW_SAMPLE_SIZE / 2);
+            double[][] outputData = new double[windowedData.length][];
+            for(int i = 0; i < windowedData.length; i++){
+                resetLayers();
+                inputLayer.fill(windowedData[i]);
+                outputData[i] = layers.get(countLayers-2).getActivations();
+                System.out.println("test");
+            }
+        }
+        return null;
+    }
 
+    public void resetLayers(){
+        for(int i = 0; i < countLayers; i++){
+            layers.get(i).resetValues();
+        }
+    }
 
 
     public double[] feedForward(double [] xy) throws AutoEncoderException {
         if(isBuild){
-            for(int i = 0; i < countLayers; i++){
-                layers.get(i).resetValues();
-            }
             inputLayer.fill(xy);
-            layers.get(countLayers-1).getActivations();
             return outputLayer.getActivations();
         }else{
             throw new AutoEncoderException("AutoEncoder not built.");
         }
-
     }
 
     public void update_mini_batch(double[][] xy) throws AutoEncoderException {
@@ -204,7 +219,7 @@ public class AutoEncoder {
             nablaW[i-1] = new double[weights.length][weights[0].length];
             for(int k = 0; k < nablaW[i-1].length; k++){
                 for(int j = 0; j < nablaW[i-1][k].length; j++){
-                    nablaW[i-1][k][j] = 0.0;
+                    nablaW[i-1][k][j] = Math.random();
                 }
             }
         }
@@ -259,7 +274,6 @@ public class AutoEncoder {
         return layers.get(countLayers-1);
     }
 
-    //public double[][]  windowing(File audioFile, final double windowLength, final double windowStep) throws IOException, UnsupportedAudioFileException {
     public double[][]  windowing(File audioFile, final int windowSampleLength, final int windowSampleStep) throws IOException, UnsupportedAudioFileException {
         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
         AudioStreamReader reader = new AudioStreamReader(audioInputStream);

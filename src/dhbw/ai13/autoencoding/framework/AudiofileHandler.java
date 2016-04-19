@@ -22,6 +22,7 @@ public class AudiofileHandler {
         for(int i = 0; i < files.size(); i++){
             filesArray[i] = files.get(i);
         }
+        System.out.println("Read all WAV-files successfully.");
         return filesArray;
     }
 }

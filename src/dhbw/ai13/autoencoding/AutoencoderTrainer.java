@@ -20,6 +20,7 @@ public class AutoencoderTrainer {
 
     private final AutoEncoder autoencoder;
 
+    private boolean DEBUG = true;
     private int WINDOW_SAMPLE_SIZE = 2000;
     private AutoEncoderDataHandler dataHandler = new AutoEncoderDataHandler();
     private TrainingsError trainingsError;
@@ -29,23 +30,21 @@ public class AutoencoderTrainer {
         this.trainingsError = autoencoder.getTrainingsError();
     }
 
-    public void train(File[] trainingsData, double error, int miniBatchSize) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
+    public void train(File[] trainingsData, int epochCount, int miniBatchSize) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
         if (autoencoder.isBuild()) {
             double[][][] trainingsSampleData = new double[trainingsData.length][][];
             for (int i = 0; i < trainingsData.length; i++) {
-                //trainingsSampleData[i] = windowing(trainingsData[i], 0.05, 0.025);
                 trainingsSampleData[i] = autoencoder.windowing(trainingsData[i], WINDOW_SAMPLE_SIZE, WINDOW_SAMPLE_SIZE / 2);
             }
-            int iterations = 0;
-            int maxIterations = 1000;
+            int epoch = 1;
             do {
                 double[][] subset = shuffleTrainingsData(trainingsSampleData, miniBatchSize);
                 autoencoder.update_mini_batch(subset);
-                iterations++;
-                if (DEBUG && (iterations % 100) == 0) {
-                    System.out.printf("[DEBUG] (%d/%d) - Error Rate: %f\n", iterations, maxIterations, trainingsError.getErrorRate());
+                if (DEBUG) {
+                    System.out.printf("[DEBUG] (%d/%d) - Error Rate: %f\n", epoch, epochCount, trainingsError.getErrorRate());
                 }
-            } while (trainingsError.getErrorRate() > error && iterations < maxIterations);
+                epoch++;
+            } while (epoch <= epochCount);
             if (DEBUG) {
                 System.out.printf("[DEBUG] Final error rate: %f\n", trainingsError.getErrorRate());
             }
@@ -57,15 +56,20 @@ public class AutoencoderTrainer {
     public double[][] shuffleTrainingsData(double[][][] trainingsSampleData, int length){
         double[][] subset = new double[length][];
         Random r = new Random();
-        ArrayList<Integer> indexList = new ArrayList<>();
-        int index;
+        ArrayList<Integer> index1List = new ArrayList<>();
+        ArrayList<Integer> index2List = new ArrayList<>();
+        int index1;
+        int index2;
         for(int i = 0; i < length; i++){
-            index = r.nextInt(trainingsSampleData.length);
-            while(indexList.contains(new Integer(index))){
-                index = r.nextInt(trainingsSampleData.length);
+            index1 = r.nextInt(trainingsSampleData.length);
+            index2 = r.nextInt(trainingsSampleData[index1].length);
+            while(index1List.contains(new Integer(index1)) && index2List.contains(new Integer(index2))){
+                index1 = r.nextInt(trainingsSampleData.length);
+                index2 = r.nextInt(trainingsSampleData[index1].length);
             }
-            indexList.add(index);
-            subset[i] = trainingsSampleData[index][0];
+            index1List.add(index1);
+            index2List.add(index2);
+            subset[i] = trainingsSampleData[index1][index2];
         }
         return subset;
     }

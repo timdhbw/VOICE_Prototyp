@@ -57,9 +57,9 @@ public class AutoEncoderDataHandler {
 
     public void saveIntoFile(AutoEncoder autoEncoder, String filename){
         try {
-            URL fileURL = this.getClass().getClassLoader().getResource(filename);
-            if(fileURL != null) {
-                File outputFile = new File(fileURL.getFile());
+            //URL fileURL = this.getClass().getClassLoader().getResource(filename);
+            //if(fileURL != null) {
+                File outputFile = new File(filename);
                 if (!outputFile.exists()) {
                     outputFile.createNewFile();
                 }
@@ -70,11 +70,13 @@ public class AutoEncoderDataHandler {
                 if(autoEncoder.isDEBUG()){
                     System.out.println("[DEBUG] Saved data into " + filename + " successfully.");
                 }
-            }else{
+            /*}else{
                 if(autoEncoder.isDEBUG()){
                     System.out.println("[DEBUG] File " + filename + " does not exist.");
                 }
             }
+
+            */
         } catch (IOException e) {
             e.printStackTrace();
         }
