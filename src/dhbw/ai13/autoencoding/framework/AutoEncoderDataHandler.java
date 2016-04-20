@@ -1,5 +1,6 @@
 package dhbw.ai13.autoencoding.framework;
 
+import dhbw.ai13.autoencoding.framework.layer.Layer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,8 +11,10 @@ import java.net.URL;
 /**
  * Created by GomaTa on 27.03.2016.
  */
+
 public class AutoEncoderDataHandler {
 
+/*
     public void readFromFile(AutoEncoder autoEncoder, String filename) {
         try {
             URL fileURL = this.getClass().getClassLoader().getResource("autoencoder.txt");
@@ -76,7 +79,7 @@ public class AutoEncoderDataHandler {
                 }
             }
 
-            */
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,7 +94,7 @@ public class AutoEncoderDataHandler {
             JSONObject jsonWeights = new JSONObject();
             JSONObject jsonBias = new JSONObject();
             Layer layer = autoEncoder.getLayers().get(i);
-            double[] bias = layer.getBias();
+            double[] bias = layer.getBiases();
             double[][] weights = layer.getWeights();
             for(int j = 0; j < layer.getCountNodes(); j++ ){ //for each node
                 jsonBias.append(String.valueOf(j),bias[j]);
@@ -105,4 +108,5 @@ public class AutoEncoderDataHandler {
         }
         return jsonNetwork.toString();
     }
+    */
 }

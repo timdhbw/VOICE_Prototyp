@@ -19,11 +19,9 @@ public class AutoEncoderTest {
 
         // Init Autoencoder
         AutoEncoder autoencoder = new AutoEncoder();
-        autoencoder.setLearningRate(3.0);
-        autoencoder.setActivationFunction(new TanH());
-        autoencoder.addLayer(1).out(numInOutLayer);
-        autoencoder.addLayer(2).in(numInOutLayer).out(numMidLayer);
-        autoencoder.addLayer(3).in(numMidLayer).out(numInOutLayer);
+        autoencoder.addLayer(1 ,numInOutLayer, new TanH(), true);
+        autoencoder.addLayer(2 ,numMidLayer, new TanH(), true);
+        autoencoder.addLayer(3 ,numInOutLayer, new TanH(), true);
         autoencoder.build();
 
         // Reading Trainingsdata
@@ -32,9 +30,9 @@ public class AutoEncoderTest {
         File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
 
         // Train Autoencoder
-        AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder);
-        aet.train(trainingsData, 20, 10);
-        autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"),numMidLayer);
+        AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder, 0.5);
+        aet.train(trainingsData, 200, 10);
+        autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"));
         //aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
 
 
