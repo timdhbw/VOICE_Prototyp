@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework;
+package dhbw.ai13.autoencoding.framework.elements;
 
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 

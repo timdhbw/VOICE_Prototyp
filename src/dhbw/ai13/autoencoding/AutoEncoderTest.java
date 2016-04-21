@@ -1,66 +1,60 @@
 package dhbw.ai13.autoencoding;
 
-import dhbw.ai13.autoencoding.activationFunctions.Sigmoid;
-import dhbw.ai13.autoencoding.activationFunctions.TanH;
-import dhbw.ai13.autoencoding.framework.AudiofileHandler;
-import dhbw.ai13.autoencoding.framework.AutoEncoder;
+import dhbw.ai13.autoencoding.exceptions.AutoEncoderException;
+import dhbw.ai13.autoencoding.framework.*;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by GomaTa on 13.02.2016.
  */
-public class AutoEncoderTest {
+public class AutoencoderTest {
 
     public static void main(String[] args) throws Exception {
-        // Layer Info
-        int numInOutLayer = 2000;
-        int numMidLayer = numInOutLayer/4;
+        //testAudioAutoencoder();
+        testSmallAutoencoder();
+    }
 
-        // Init Autoencoder
-        AutoEncoder autoencoder = new AutoEncoder(numInOutLayer);
-        autoencoder.addLayer(1 ,numInOutLayer, new TanH(), true);
-        autoencoder.addLayer(2 ,numMidLayer, new TanH(), true);
-        autoencoder.addLayer(3 ,numInOutLayer, new TanH(), true);
-        autoencoder.build();
+    private static void testSmallAutoencoder() throws AutoEncoderException, IOException, UnsupportedAudioFileException {
+        SmallAutoencoder sae = new SmallAutoencoder();
+        AutoEncoder autoencoder = sae.getAutoencoder();
+
+        double[][] trainingsData = new double[4][];
+        trainingsData[0] = new double[]{1.0,0.0,0.0,0.0};
+        trainingsData[1] = new double[]{0.0,1.0,0.0,0.0};
+        trainingsData[2] = new double[]{0.0,0.0,1.0,0.0};
+        trainingsData[3] = new double[]{0.0,0.0,0.0,1.0};
+        SmallAutoencoderTrainer sat = new SmallAutoencoderTrainer(autoencoder, 0.5);
+        sat.train(trainingsData, 1000000);
+        System.out.println();
+        sat.train(trainingsData, 1, true);
+        System.out.println();
+        sat.train(trainingsData, 1, true);
+        System.out.println();
+        sat.train(trainingsData, 1, true);
+        System.out.println();
+        sat.train(trainingsData, 1, true);
+
+    }
+
+    public static void testAudioAutoencoder() throws AutoEncoderException, IOException, UnsupportedAudioFileException {
+        AudioAutoencoder aae = new AudioAutoencoder();
+        AutoEncoder autoencoder = aae.getAutoencoder();
+        int numInOutLayer = aae.getNumInOutLayer();
 
         // Reading Trainingsdata
-        //double[][] trainingsData = new TrainingsData().readFromFile("C:\\Users\\GomaTa\\Documents\\Training.csv");
         AudiofileHandler afh = new AudiofileHandler();
-        File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
+        File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources");
 
         // Train Autoencoder
-        AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder, 0.1, numInOutLayer);
-        aet.train(trainingsData, 1, 1);
-        aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
-        autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"));
+        AudioAutoencoderTrainer aet = new AudioAutoencoderTrainer(autoencoder, 0.1, numInOutLayer);
+        aet.train(trainingsData, 2000, 1);
+        aet.train(trainingsData, 1, 1, true);
+        //aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
+        //autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"));
 
-        /*
-        double[] input1 = new double[]{1.0,0.0,0.0};
-        System.out.print("[Input]\t");
-        printData(input1);
-        double[] output1 = ae.feedForward(input1);
-        System.out.print("[Output]");
-        printData(output1);
-
-        System.out.println();
-
-        double[] input2 = new double[]{0.0,1.0,0.0};
-        System.out.print("[Input]\t");
-        printData(input2);
-        double[] output2 = ae.feedForward(input1);
-        System.out.print("[Output]");
-        printData(output2);
-
-        System.out.println();
-
-        double[] input3 = new double[]{0.0,0.0,1.0};
-        System.out.print("[Input]\t");
-        printData(input3);
-        double[] output3 = ae.feedForward(input1);
-        System.out.print("[Output]");
-        printData(output3);
-        */
     }
 
     public static void printData(double[] data){

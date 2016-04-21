@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework;
+package dhbw.ai13.autoencoding.framework.elements;
 
 /**
  * Created by GomaTa on 28.02.2016.

@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework;
+package dhbw.ai13.autoencoding.framework.elements;
 
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 
@@ -14,13 +14,11 @@ public class Layer {
     private Layer prevLayer;
     private int countNodesPrevLayer;
     private final ActivationFunction activationFunction;
-    private final boolean hasBias;
 
-    public Layer(int id, int countNodes, ActivationFunction activationFunction, boolean hasBias){
+    public Layer(int id, int countNodes, ActivationFunction activationFunction){
         this.id = id;
         this.countNodes = countNodes;
         this.activationFunction = activationFunction;
-        this.hasBias = hasBias;
     }
 
     public void build(Layer prevLayer, int countNodesPrevLayer){
@@ -29,7 +27,7 @@ public class Layer {
         this.countNodesPrevLayer = countNodesPrevLayer;
         // init nodes
         for(int i = 0;i < countNodes; i++) {
-            this.nodes.add(new Node(i, countNodesPrevLayer, activationFunction, hasBias));
+            this.nodes.add(new Node(i, countNodesPrevLayer, activationFunction));
         }
     }
 

@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework;
+package dhbw.ai13.autoencoding.framework.elements;
 
 import java.io.*;
 import java.nio.charset.Charset;

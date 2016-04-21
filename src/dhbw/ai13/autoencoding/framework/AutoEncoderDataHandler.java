@@ -1,5 +1,6 @@
 package dhbw.ai13.autoencoding.framework;
 
+import dhbw.ai13.autoencoding.framework.elements.Layer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

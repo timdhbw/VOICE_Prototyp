@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework;
+package dhbw.ai13.autoencoding.framework.elements;
 
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 
@@ -11,26 +11,23 @@ public class Node {
     private final int id;
     private final ActivationFunction activationFunction;
     private double bias;
-    private final boolean hasBias;
     private ArrayList<Double> weights = new ArrayList<>();
     private final int countWeights;
     private double activationValue;
     private double zValue;
 
-    public Node(int id, int countWeights, ActivationFunction activationFunction, boolean hasBias){
+    public Node(int id, int countWeights, ActivationFunction activationFunction){
         this.id = id;
         this.countWeights = countWeights;
         this.activationFunction = activationFunction;
-        this.hasBias = hasBias;
         init();
     }
 
     private void init(){
-        if(hasBias){
-            bias = 0.0;
-        }
+        bias = 0.0;
         for(int i = 0; i < countWeights; i++){
-            weights.add(0.001*Math.random());
+            //weights.add(0.0001*Math.random());
+            weights.add(Math.random());
         }
     }
 
@@ -68,9 +65,7 @@ public class Node {
             double preValue = prevNodes.get(j).getActivationValue();
             newValue += weights.get(j) * preValue;
         }
-        if(hasBias){
-            newValue += bias;
-        }
+        newValue += bias;
         this.zValue = newValue;
         this.activationValue = activationFunction.function(newValue);
     }

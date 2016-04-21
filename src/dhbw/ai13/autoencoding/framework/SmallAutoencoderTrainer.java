@@ -1,80 +1,72 @@
-package dhbw.ai13.autoencoding;
+package dhbw.ai13.autoencoding.framework;
 
+import com.musicg.dsp.WindowFunction;
+import dhbw.ai13.audio.AudioStreamReader;
 import dhbw.ai13.autoencoding.exceptions.AutoEncoderException;
-import dhbw.ai13.autoencoding.framework.*;
+import dhbw.ai13.autoencoding.framework.elements.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * Created by GomaTa on 18.04.2016.
  */
-public class AutoencoderTrainer {
+public class SmallAutoencoderTrainer {
 
     private final int countLayers;
-    private final int windowSampleSize;
     private boolean DEBUG = true;
 
     private final AutoEncoder autoencoder;
     private final double learningRate;
     private TrainingsError trainingsError;
     private AutoEncoderDataHandler dataHandler = new AutoEncoderDataHandler();
+    private boolean showresult;
 
-    public AutoencoderTrainer(AutoEncoder autoencoder, double learningRate, int windowSampleSize) {
+    public SmallAutoencoderTrainer(AutoEncoder autoencoder, double learningRate) {
         this.autoencoder = autoencoder;
         this.learningRate = learningRate;
-        this.windowSampleSize = windowSampleSize;
         this.trainingsError = new TrainingsError();
         this.countLayers = autoencoder.getCountLayers();
     }
 
-    public void train(File[] trainingsData, int epochCount, int miniBatchSize) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
+
+    public void train(double[][] trainingsData, int epochCount) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
         if (autoencoder.isBuild()) {
-            double[][][] trainingsSampledData = new double[trainingsData.length][][];
-            for (int i = 0; i < trainingsData.length; i++) {
-                trainingsSampledData[i] = autoencoder.windowing(trainingsData[i], windowSampleSize, windowSampleSize / 2);
-            }
-            SGD(trainingsSampledData, epochCount);
+            SGD(trainingsData, epochCount);
         } else {
             throw new AutoEncoderException("Autoencoder not built.");
         }
     }
 
-    private void SGD(double[][][] trainingsData, int epochCount) throws AutoEncoderException {
+    public void train(double[][] trainingsData, int epochCount, boolean showresult) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
+        this.showresult = showresult;
+        if (autoencoder.isBuild()) {
+            SGD(trainingsData, epochCount);
+        } else {
+            throw new AutoEncoderException("Autoencoder not built.");
+        }
+    }
+
+
+    private void SGD(double[][] trainingsData, int epochCount) throws AutoEncoderException {
         int epoch = 1;
         Random r = new Random();
         do {
-            int index1 = r.nextInt(trainingsData.length);
-            int index2 = r.nextInt(trainingsData[index1].length);
-            double[] subset = trainingsData[index1][index2];
+            int index = r.nextInt(trainingsData.length);
+            double[] subset = trainingsData[index];
             update(subset);
             if (DEBUG) {
                 System.out.printf("[DEBUG] (%d/%d) - Error: %f\n", epoch, epochCount, trainingsError.calculateError(subset,autoencoder.getOutputLayer().getActivations()));
             }
             epoch++;
         } while (epoch <= epochCount);
-    }
-
-    private double[][] shuffleTrainingsData(double[][][] trainingsSampleData, int length){
-        double[][] subset = new double[length][];
-        Random r = new Random();
-        HashMap<String,Boolean> indexList = new HashMap<>();
-        int index1, index2;
-        for(int i = 0; i < length; i++){
-            index1 = r.nextInt(trainingsSampleData.length);
-            index2 = r.nextInt(trainingsSampleData[index1].length);
-            while(indexList.get(index1+"_"+index2) != null){
-                index1 = r.nextInt(trainingsSampleData.length);
-                index2 = r.nextInt(trainingsSampleData[index1].length);
-            }
-            indexList.put(index1+"_"+index2,true);
-            subset[i] = trainingsSampleData[index1][index2];
-        }
-        return subset;
     }
 
     private void update(double[] subset) throws AutoEncoderException {
@@ -124,7 +116,12 @@ public class AutoencoderTrainer {
     public void backpropagation(double[] idealValues, NablaWeights[] nablaW, NablaBiases[] nablaB) throws AutoEncoderException {
         //feed forward
         autoencoder.feedForward(idealValues);
-
+        if(showresult) {
+            Layer outputLayer = autoencoder.getOutputLayer();
+            for (int i = 0; i < outputLayer.getCountNodes(); i++) {
+                System.out.printf("%f|%f\n",idealValues[i],outputLayer.getNodes().get(i).getActivationValue());
+            }
+        }
         Layer prevLayer, currentLayer, nextLayer;
         Delta deltaClass;
 
@@ -153,13 +150,4 @@ public class AutoencoderTrainer {
         }
     }
 
-
-
-    public void saveDataToFile(String filepath){
-        dataHandler.saveIntoFile(autoencoder, filepath);
-    }
-
-    public void readDataFromFile(String filepath){
-        dataHandler.readFromFile(autoencoder, filepath);
-    }
 }
