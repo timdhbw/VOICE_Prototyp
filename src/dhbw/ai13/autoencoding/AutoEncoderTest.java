@@ -15,10 +15,10 @@ public class AutoEncoderTest {
     public static void main(String[] args) throws Exception {
         // Layer Info
         int numInOutLayer = 2000;
-        int numMidLayer = 500;
+        int numMidLayer = numInOutLayer/4;
 
         // Init Autoencoder
-        AutoEncoder autoencoder = new AutoEncoder();
+        AutoEncoder autoencoder = new AutoEncoder(numInOutLayer);
         autoencoder.addLayer(1 ,numInOutLayer, new TanH(), true);
         autoencoder.addLayer(2 ,numMidLayer, new TanH(), true);
         autoencoder.addLayer(3 ,numInOutLayer, new TanH(), true);
@@ -30,12 +30,10 @@ public class AutoEncoderTest {
         File[] trainingsData = afh.getTrainingsData("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
 
         // Train Autoencoder
-        AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder, 0.5);
-        aet.train(trainingsData, 200, 10);
+        AutoencoderTrainer aet = new AutoencoderTrainer(autoencoder, 0.1, numInOutLayer);
+        aet.train(trainingsData, 1, 1);
+        aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
         autoencoder.encode(new File("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\A_Eric_Zenker_02.wav"));
-        //aet.saveDataToFile("C:\\Users\\GomaTa\\Desktop\\autoencoder.txt");
-
-
 
         /*
         double[] input1 = new double[]{1.0,0.0,0.0};

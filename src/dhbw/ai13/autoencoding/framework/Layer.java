@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework.layer;
+package dhbw.ai13.autoencoding.framework;
 
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 
@@ -96,5 +96,14 @@ public class Layer {
 
     public ActivationFunction getActivationFunction() {
         return activationFunction;
+    }
+
+    public double[] getBiases() {
+        double[] biases = new double[countNodes];
+        for(int i = 0; i < countNodes; i++){
+            Node node = nodes.get(i);
+            biases[i] = node.getBias();
+        }
+        return biases;
     }
 }

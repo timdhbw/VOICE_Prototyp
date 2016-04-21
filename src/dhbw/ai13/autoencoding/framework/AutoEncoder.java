@@ -4,7 +4,6 @@ import com.musicg.dsp.WindowFunction;
 import dhbw.ai13.audio.AudioStreamReader;
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 import dhbw.ai13.autoencoding.exceptions.AutoEncoderException;
-import dhbw.ai13.autoencoding.framework.layer.Layer;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,11 +21,14 @@ public class AutoEncoder {
     private Layer inputLayer;
     private Layer encodeLayer;
     private Layer outputLayer;
-    private double learningRate;
     private int countLayers = 0;
 
     private final boolean DEBUG = true;
-    private int WINDOW_SAMPLE_SIZE = 2000;
+    private final int windowSampleSize;
+
+    public AutoEncoder(int windowSampleSize){
+        this.windowSampleSize = windowSampleSize;
+    }
 
     public void build() throws AutoEncoderException {
         for(int i = 0; i < countLayers; i++){
@@ -63,7 +65,7 @@ public class AutoEncoder {
     public double[] encode(File file) throws IOException, UnsupportedAudioFileException, AutoEncoderException {
         if(isBuild) {
             double[] coefficients = new double[encodeLayer.getCountNodes()];
-            double[][] windowedData = windowing(file, WINDOW_SAMPLE_SIZE, WINDOW_SAMPLE_SIZE / 2);
+            double[][] windowedData = windowing(file, windowSampleSize, windowSampleSize / 2);
             final int n = windowedData.length;
             double[][] outputData = new double[n][];
             // calculate autoencoder values
@@ -111,7 +113,7 @@ public class AutoEncoder {
         //System.out.println("HammingWindowLength:" + windowValues.length);
         IntStream.range(0, windowedSamples.length).parallel().forEach(i -> {
             final int startOffset = i * offsetSampleCount;
-            // add the frame with the portion of the signal, weighted with a hamming window
+            // setWeights the frame with the portion of the signal, weighted with a hamming window
             IntStream.range(0, windowedSamples[i].length).parallel().forEach(j -> {
                 if (startOffset + j < samples.length)
                     windowedSamples[i][j] = samples[startOffset + j] * windowValues[j];

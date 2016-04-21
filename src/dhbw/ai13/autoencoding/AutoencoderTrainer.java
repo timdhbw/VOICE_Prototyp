@@ -1,10 +1,7 @@
 package dhbw.ai13.autoencoding;
 
 import dhbw.ai13.autoencoding.exceptions.AutoEncoderException;
-import dhbw.ai13.autoencoding.framework.AutoEncoder;
-import dhbw.ai13.autoencoding.framework.AutoEncoderDataHandler;
-import dhbw.ai13.autoencoding.framework.TrainingsError;
-import dhbw.ai13.autoencoding.framework.layer.*;
+import dhbw.ai13.autoencoding.framework.*;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -19,17 +16,18 @@ import java.util.Random;
 public class AutoencoderTrainer {
 
     private final int countLayers;
+    private final int windowSampleSize;
     private boolean DEBUG = true;
-    private final int WINDOW_SAMPLE_SIZE = 2000;
 
     private final AutoEncoder autoencoder;
     private final double learningRate;
     private TrainingsError trainingsError;
     private AutoEncoderDataHandler dataHandler = new AutoEncoderDataHandler();
 
-    public AutoencoderTrainer(AutoEncoder autoencoder, double learningRate) {
+    public AutoencoderTrainer(AutoEncoder autoencoder, double learningRate, int windowSampleSize) {
         this.autoencoder = autoencoder;
         this.learningRate = learningRate;
+        this.windowSampleSize = windowSampleSize;
         this.trainingsError = new TrainingsError();
         this.countLayers = autoencoder.getCountLayers();
     }
@@ -38,21 +36,24 @@ public class AutoencoderTrainer {
         if (autoencoder.isBuild()) {
             double[][][] trainingsSampledData = new double[trainingsData.length][][];
             for (int i = 0; i < trainingsData.length; i++) {
-                trainingsSampledData[i] = autoencoder.windowing(trainingsData[i], WINDOW_SAMPLE_SIZE, WINDOW_SAMPLE_SIZE / 2);
+                trainingsSampledData[i] = autoencoder.windowing(trainingsData[i], windowSampleSize, windowSampleSize / 2);
             }
-            SGD(trainingsSampledData, epochCount, miniBatchSize);
+            SGD(trainingsSampledData, epochCount);
         } else {
             throw new AutoEncoderException("Autoencoder not built.");
         }
     }
 
-    private void SGD(double[][][] trainingsData, int epochCount, int miniBatchSize) throws AutoEncoderException {
+    private void SGD(double[][][] trainingsData, int epochCount) throws AutoEncoderException {
         int epoch = 1;
+        Random r = new Random();
         do {
-            double[][] subset = shuffleTrainingsData(trainingsData, miniBatchSize);
-            updateMiniBatch(subset);
+            int index1 = r.nextInt(trainingsData.length);
+            int index2 = r.nextInt(trainingsData[index1].length);
+            double[] subset = trainingsData[index1][index2];
+            update(subset);
             if (DEBUG) {
-                System.out.printf("[DEBUG] (%d/%d) - Error: %f\n", epoch, epochCount, trainingsError.calculateError(subset[subset.length-1],autoencoder.getOutputLayer().getActivations()));
+                System.out.printf("[DEBUG] (%d/%d) - Error: %f\n", epoch, epochCount, trainingsError.calculateError(subset,autoencoder.getOutputLayer().getActivations()));
             }
             epoch++;
         } while (epoch <= epochCount);
@@ -76,49 +77,45 @@ public class AutoencoderTrainer {
         return subset;
     }
 
-    private void updateMiniBatch(double[][] subset) throws AutoEncoderException {
+    private void update(double[] subset) throws AutoEncoderException {
         NablaBiases[] nablaB = new NablaBiases[countLayers-1];
         NablaWeights[] nablaW = new NablaWeights[countLayers-1];
-        //init nabla biases and weights
         for(int i = 1; i < countLayers; i++){
             Layer layer = autoencoder.getLayer(i);
             Layer prevLayer = autoencoder.getLayer(i-1);
             nablaB[i-1] = new NablaBiases(layer.getCountNodes());
             nablaW[i-1] = new NablaWeights(layer.getCountNodes(),prevLayer.getCountNodes());
         }
-        // backpropagation for each subset
-        for(int i = 0; i < subset.length; i++){
-            backpropagation(subset[i], nablaW, nablaB);
-        }
-        updateBiases(nablaB,subset.length);
-        updateWeights(nablaW,subset.length);
+        backpropagation(subset, nablaW, nablaB);
+        updateBiases(nablaB);
+        updateWeights(nablaW);
 
     }
 
-    public void updateBiases(NablaBiases[] nablaB, int dataLength){
-        for(int i = 1; i < countLayers; i++ ){
-            Layer layer = autoencoder.getLayer(i);
+    public void updateBiases(NablaBiases[] nablaB){
+        for(int l = 1; l < countLayers; l++ ){
+            Layer layer = autoencoder.getLayer(l);
             ArrayList<Node> nodes = layer.getNodes();
-            NablaBiases nablaBLayer = nablaB[i-1];
-            for(int k = 0; k < nodes.size(); k++){
-                Node node = nodes.get(k);
+            NablaBiases nablaBLayer = nablaB[l-1];
+            for(int j = 0; j < nodes.size(); j++){
+                Node node = nodes.get(j);
                 double oldValue = node.getBias();
-                node.setBias(oldValue - ((learningRate/Double.valueOf(dataLength)) * nablaBLayer.getValue(k)));
+                node.setBias(oldValue - (learningRate * nablaBLayer.getValue(j)));
             }
         }
     }
 
-    public void updateWeights(NablaWeights[] nablaW, int dataLength){
-        for(int i = 1; i < countLayers; i++ ){
-            Layer layer = autoencoder.getLayer(i);
+    public void updateWeights(NablaWeights[] nablaW){
+        for(int l = 1; l < countLayers; l++ ){
+            Layer layer = autoencoder.getLayer(l);
             ArrayList<Node> nodes = layer.getNodes();
-            NablaWeights nablaWLayer= nablaW[i-1];
-            for (int k = 0; k < nodes.size(); k++) {
-                Node node = nodes.get(k);
-                ArrayList<Double> nablaWNode = nablaWLayer.getWeightsOfNode(k);
+            NablaWeights nablaWLayer= nablaW[l-1];
+            for (int j = 0; j < nodes.size(); j++) {
+                Node node = nodes.get(j);
+                ArrayList<Double> nablaWNode = nablaWLayer.getWeightsOfNode(j);
                 double[] oldWeights = node.getWeights();
-                for (int j = 0; j < oldWeights.length; j++) {
-                    node.updateWeight(j, oldWeights[j] - ((learningRate/Double.valueOf(dataLength)) * nablaWNode.get(j)));
+                for (int k = 0; k < oldWeights.length; k++) {
+                    node.updateWeight(k, oldWeights[k] - (learningRate * nablaWNode.get(k)));
                 }
             }
         }
@@ -130,15 +127,15 @@ public class AutoencoderTrainer {
 
         Layer prevLayer, currentLayer, nextLayer;
         Delta deltaClass;
-        double[] delta;
 
-        //calculate delta for output layer
         currentLayer = autoencoder.getOutputLayer();
         prevLayer = autoencoder.getLayer(countLayers-2);
+        // calculate delta for output layer
         deltaClass = new Delta(currentLayer.getActivationFunction());
-        delta = deltaClass.calculate(idealValues,currentLayer.getActivations());
-        nablaW[countLayers-2].add(delta,prevLayer.getActivations());
-        nablaB[countLayers-2].add(delta);
+        double[] delta = deltaClass.calculate(idealValues,currentLayer.getActivations(), currentLayer.getZs());
+
+        nablaW[countLayers-2].setWeights(delta,prevLayer.getActivations());
+        nablaB[countLayers-2].setBiases(delta);
 
         //calculate nabla w and b for other layers
         for(int i = countLayers-2; i > 0; i--){
@@ -151,13 +148,13 @@ public class AutoencoderTrainer {
             delta = deltaClass.calculate(nextLayer.getWeights(),delta, currentLayer.getZs());
 
             // calculate delta nabla weights and biases
-            nablaW[i-1].add(delta,prevLayer.getActivations());
-            nablaB[i-1].add(delta);
+            nablaW[i-1].setWeights(delta,prevLayer.getActivations());
+            nablaB[i-1].setBiases(delta);
         }
     }
 
 
-    /*
+
     public void saveDataToFile(String filepath){
         dataHandler.saveIntoFile(autoencoder, filepath);
     }
@@ -165,5 +162,4 @@ public class AutoencoderTrainer {
     public void readDataFromFile(String filepath){
         dataHandler.readFromFile(autoencoder, filepath);
     }
-    */
 }

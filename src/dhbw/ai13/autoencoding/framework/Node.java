@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework.layer;
+package dhbw.ai13.autoencoding.framework;
 
 import dhbw.ai13.autoencoding.activationFunctions.ActivationFunction;
 
@@ -30,7 +30,7 @@ public class Node {
             bias = 0.0;
         }
         for(int i = 0; i < countWeights; i++){
-            weights.add(Math.random());
+            weights.add(0.001*Math.random());
         }
     }
 

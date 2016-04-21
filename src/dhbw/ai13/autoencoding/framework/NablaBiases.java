@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework.layer;
+package dhbw.ai13.autoencoding.framework;
 
 import java.util.ArrayList;
 
@@ -20,18 +20,9 @@ public class NablaBiases {
         }
     }
 
-    public void addValues(NablaBiases nablaB){
-        double newBiases;
-        for(int i = 0; i < biases.size(); i++){
-            newBiases = biases.get(i) + nablaB.getValue(i);
-            biases.set(i, newBiases);
-        }
-    }
-
-    public void add(double[] values){
+    public void setBiases(double[] values){
         for(int i = 0; i < countBiases; i++){
-            double oldValue = biases.get(i);
-            biases.set(i, oldValue + values[i]);
+            biases.set(i, values[i]);
         }
     }
 

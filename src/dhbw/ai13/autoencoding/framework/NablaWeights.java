@@ -1,4 +1,4 @@
-package dhbw.ai13.autoencoding.framework.layer;
+package dhbw.ai13.autoencoding.framework;
 
 import java.util.ArrayList;
 
@@ -26,15 +26,14 @@ public class NablaWeights {
         }
     }
 
-    public void add(double[] delta, double[] activationValues){
+    public void setWeights(double[] delta, double[] prevActivationValues){
         for(int j = 0; j < delta.length; j++){ //for each node of layer
-            for(int k = 0; k < activationValues.length; k++){ //for each node's wheight
+            for(int k = 0; k < prevActivationValues.length; k++){ //for each node's wheight
                 //deltaNablaW[j][k] = delta nalba for node
                 // a[k] = activation value of node of current layer
                 // d[j] = delta of node of next layer
                 ArrayList<Double> node = weights.get(j);
-                double oldValue = node.get(k);
-                node.set(k, oldValue + (activationValues[k] * delta[j]));
+                node.set(k, (prevActivationValues[k] * delta[j]));
             }
         }
     }
