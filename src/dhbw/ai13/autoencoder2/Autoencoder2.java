@@ -116,7 +116,7 @@ public class Autoencoder2 {
         //System.out.println("HammingWindowLength:" + windowValues.length);
         IntStream.range(0, windowedSamples.length).parallel().forEach(i -> {
             final int startOffset = i * offsetSampleCount;
-            // add the frame with the portion of the signal, weighted with a hamming window
+            // setWeights the frame with the portion of the signal, weighted with a hamming window
             IntStream.range(0, windowedSamples[i].length).parallel().forEach(j -> {
                 if (startOffset + j < samples.length)
                     windowedSamples[i][j] = samples[startOffset + j] * windowValues[j];
