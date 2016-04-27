@@ -5,6 +5,7 @@ import dhbw.ai13.speech.detection.Vector13D;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -52,9 +53,30 @@ public class MFCCSupplier {
         return null;
     }
 
-    public static void main(String[] args){
-        ArrayList<Vector13D> o = MFCCSupplier.computeMFCCsOfFolder("C:\\Users\\GomaTa\\Documents\\VOICE_Prototyp\\resources\\tmp");
-        System.out.println(o);
+    public static void saveMFFCsOfFolderToFile(String pathToWAV, String pathToFile) throws NumberFormatException, IOException {
+        File f = new File(pathToFile);
+        FileWriter fw = new FileWriter(f);
+        ArrayList<Vector13D> mfccs = new ArrayList<>();
+        ArrayList<String> lines = new ArrayList<>();
+        if (mfccs.size() == 0){
+            ArrayList<Vector13D> m = MFCCSupplier.computeMFCCsOfFolder(pathToWAV);
+            for(int i = 0; i < m.size(); i++){
+                StringBuilder line = new StringBuilder();
+                Vector13D v = m.get(i);
+                double[] a = v.getVector();
+                line.append(v.getUser() + "$");
+                line.append(v.getVocal() + "$");
+                for(int j = 0; j < a.length; j++){
+                    line.append(String.format("%f;",a[j]));
+                }
+                lines.add(line.toString());
+            }
+        }
+        for(int i = 0; i < lines.size(); i++){
+            fw.write(lines.get(i) + System.getProperty("line.separator"));
+            fw.flush();
+        }
+        fw.close();
     }
 
 }
