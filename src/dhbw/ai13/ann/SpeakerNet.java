@@ -3,8 +3,10 @@ package dhbw.ai13.ann;
 import static dhbw.ai13.ann.ArrayUtil.getMaxIndex;
 import static dhbw.ai13.ann.Configuration.DEBUG;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.encog.Encog;
@@ -110,6 +112,15 @@ public class SpeakerNet {
 		Encog.getInstance().shutdown();
 
 	}
+
+	public SpeakerNet(){
+		net = new BasicNetwork();
+		net.addLayer(new BasicLayer(new ActivationTANH(), false, COEFFICIENTS_TO_USE));
+		net.addLayer(new BasicLayer(new ActivationTANH(), false, NEURONS));
+		net.addLayer(new BasicLayer(new ActivationSoftMax(), false, 1));
+		net.getStructure().finalizeStructure();
+		net.reset();
+	}
 	
 	/**
 	* The function identify determines the best matching speaker.  
@@ -125,8 +136,7 @@ public class SpeakerNet {
 	}
 	
 	/**
-	* The function identify determines the best matching speaker.  
-	* @param Array with mfcc data.
+	* The function identify determines the best matching speaker.
 	* @return Name of the speaker.	
 	*/	
 	public String identify(double[][] mfcc) {
@@ -149,4 +159,47 @@ public class SpeakerNet {
 		return r;
 	}
 
+	public void saveWeightsToFile(String filepath){
+		int nLayer = net.getLayerCount();
+		List<String> lines = new LinkedList<>();
+		for(int l = 0; l < nLayer-1; l++){
+			StringBuilder sb = new StringBuilder();
+			//System.out.printf("Layer %d: nNeurons %d\n",l,net.getLayerTotalNeuronCount(l));
+			//System.out.printf("Layer %d: nNeurons %d\n",l+1,net.getLayerTotalNeuronCount(l+1));
+			int nNeuronsCurrentLayer = net.getLayerTotalNeuronCount(l);
+			int nNeuronsNextLayer = net.getLayerTotalNeuronCount(l+1);
+			for(int j = 0; j < nNeuronsCurrentLayer; j++) {
+				for (int jj = 0; jj < nNeuronsNextLayer; jj++) {
+					//System.out.printf("[Layer%d] [Neuron%d->%d] n weight: %f\n",l,j,jj,net.getWeight(l, j, jj));
+					sb.append(String.format(Locale.ENGLISH,"%f;",net.getWeight(l, j, jj)));
+				}
+			}
+			lines.add(sb.toString());
+		}
+		try {
+			Files.write(Paths.get(filepath),lines);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void readWeightFromFile(String filepath){
+		try {
+			List<String> lines = Files.readAllLines(Paths.get(filepath));
+			int nLayer = net.getLayerCount();
+			for(int l = 0; l < nLayer-1; l++) {
+				String[] weights = lines.get(l).split(";");
+				int nNeuronsCurrentLayer = net.getLayerTotalNeuronCount(l);
+				int nNeuronsNextLayer = net.getLayerTotalNeuronCount(l+1);
+				for(int j = 0; j < nNeuronsCurrentLayer; j++) {
+					for (int jj = 0; jj < nNeuronsNextLayer; jj++) {
+						net.setWeight(l, j, jj, Double.valueOf(weights[j*nNeuronsNextLayer+jj]));
+					}
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
