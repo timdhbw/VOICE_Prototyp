@@ -12,14 +12,14 @@ import java.util.ArrayList;
  */
 
 
-public class Algorithm {
+public class ClassificatorAlgorithm {
 	private Matrix database;
 	private double[][] stream;
 	private double minimumPossibility;
 	
 	
 	//Constructors
-	public Algorithm(Matrix database, double[][] stream){
+	public ClassificatorAlgorithm(Matrix database, double[][] stream){
 		this.database = database;
 		double[][] helpStream =  HelpMethod.convertStream(stream, database.getNumOfIntensities(), database.getMaxIntensity()/database.getNumOfIntensities(), stream[0].length/database.getNumOfFrequencies());
 		this.stream = HelpMethod.streamNormalizer(helpStream);
@@ -28,7 +28,7 @@ public class Algorithm {
 		//System.out.println("Times and minimum Possibility are default! Times: " + this.times +" minimumPossibility: " + this.minimumPossibility);
 	}
 	
-	public Algorithm(Matrix database, double[][] stream, double minimumPossibility){
+	public ClassificatorAlgorithm(Matrix database, double[][] stream, double minimumPossibility){
 		this.database = database;
 		double[][] helpStream = HelpMethod.convertStream(stream, database.getNumOfIntensities(), database.getMaxIntensity()/database.getNumOfIntensities(), stream[0].length/database.getNumOfFrequencies());
 		this.stream = HelpMethod.streamNormalizer(helpStream);
