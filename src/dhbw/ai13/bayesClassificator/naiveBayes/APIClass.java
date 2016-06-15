@@ -1,5 +1,6 @@
 package dhbw.ai13.bayesClassificator.naiveBayes;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import dhbw.ai13.bayesClassificator.trainer.NaiveBayesTrainer;
@@ -60,19 +61,34 @@ public class APIClass {
 	//doClassifikation
 	public void doClassifikation(String input){
 		this.input = input;
+		//training
+		//Trainer erstellen
 		NaiveBayesTrainer nbt = new NaiveBayesTrainer(numberOfIntensity, numberOfFrequencies, timeSteps, 0);
+		//Spectrogramm ersteller erstellen
 		
-		//For TrainingOrdner
-		//Train
+		//Array von Files aus dem Trainingsordner erstellen
+		File folder = new File(input);
+		File[] listOfFiles = folder.listFiles();
 		
+		//mit jedem Audiofile trainieren
+		for (File file : listOfFiles) {
+		    if (file.isFile()) {
+		        nbt.trainDatabase(new SpectrogrammErsteller(1024, 0, file.getPath()).getSpectrogramData(), file.getName().substring(0,1));
+		    }
+		}
+		
+		//Anzahl der antrainierten Phoneme speichern
 		numberOfPhonems = nbt.getDatabase().getPhonem().length;
 		
-		
-		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, "resources/Test As/php10 zum testen.wav");
+		//inputfile Eingeben
+		SpectrogrammErsteller creater = new SpectrogrammErsteller(1024, 0, input);
 		double[][]d = creater.getSpectrogramData();
 		
+		//Result Objekte finden
 		ClassificatorAlgorithm alg = new ClassificatorAlgorithm(nbt.getDatabase(), d, minResult);
 		ArrayList<Result> res = alg.getBestResults();
+		
+		//Ergebnisse Ausschneiden
 		int count = 1;
 		for(int i=0;i<res.size() && i<anzahlMaxResult;i++){
 			if(res.get(i).getProbability() > minEndResult){
