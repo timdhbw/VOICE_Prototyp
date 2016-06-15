@@ -47,6 +47,9 @@ public class APIClass {
 	private double minEndResult = 10;
 	//so lang wird die ausgeschnittene Datei (in ms)
 	private int cutTime = 200;
+	
+	//Angenommen Laenge eises timeSteps in ms (liegt wohl zwischen 10 und 11)
+	private int timeStepLength = 10;
 
 	//default Constructor
 	public APIClass(){
@@ -74,7 +77,7 @@ public class APIClass {
 		for(int i=0;i<res.size() && i<anzahlMaxResult;i++){
 			if(res.get(i).getProbability() > minEndResult){
 				String p = zielOrdner + "/" + res.get(i).getName() +count+".wav";
-				HelpMethod.copyAudio(input, p, res.get(i).getTimeIndex(), cutTime, 21);
+				HelpMethod.copyAudio(input, p, res.get(i).getTimeIndex(), cutTime, timeStepLength);
 				count++;
 				System.out.println(res.get(i).toString() + "      count: " +  count);	
 			}		
